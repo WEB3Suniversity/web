@@ -1,5 +1,16 @@
 export const CONTRACT_ABI = [
   {
+    inputs: [
+      {
+        internalType: "address payable",
+        name: "_webAiToken",
+        type: "address",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "constructor",
+  },
+  {
     anonymous: false,
     inputs: [
       {
@@ -233,10 +244,10 @@ export const CONTRACT_ABI = [
   },
   {
     inputs: [],
-    name: "yiDengToken",
+    name: "webAiToken",
     outputs: [
       {
-        internalType: "contract YiDengToken",
+        internalType: "contract WebAiToken",
         name: "",
         type: "address",
       },

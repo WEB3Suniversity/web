@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { YD_TOKEN_ABI } from "@/utils/YiDengToKen_ABI";
 
-const CONTRACT_ADDRESS = "0x46A653Db56B81c87b30A4A0F46b8D3546E5D832b";
+const CONTRACT_ADDRESS = "0x4Ee7e7E6104451c65ecFe94B6878e1025B02ccA8";
 
 interface ContractData {
   MAX_SUPPLY?: string;

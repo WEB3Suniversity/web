@@ -34,8 +34,6 @@ export default function MetaMaskCard() {
       console.debug("Failed to connect eagerly to metamask");
     });
   }, []);
-  console.log(accounts, chainId, provider);
-
   return (
     <Card
       connector={metaMask}
