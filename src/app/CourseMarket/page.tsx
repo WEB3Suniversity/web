@@ -3,14 +3,13 @@
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { CONTRACT_ABI } from "@/utils/CONTRACT_ABI";
-import MetaMaskCard from "@/components/connectorCards/MetaMaskCard";
 // import { BigInt } from "ethers"; // 正确导入 BigNumber
 // 请替换为您的YD代币地址和ABI
-const YD_TOKEN_ADDRESS = "0x4Ee7e7E6104451c65ecFe94B6878e1025B02ccA8";
 import { YD_TOKEN_ABI } from "@/utils/YiDengToKen_ABI";
-import ExchangeModal from "@/components/CourseMarketPage";
-
-const CONTRACT_ADDRESS = "0xC926e252e31Ea9450230decd200F6538133DA0a0";
+import { hooks, metaMaskStore } from "@/connections/metaMask";
+import ConnectPage from "@/components/connectPage";
+import { CONTRACT_ADDRESS, YD_TOKEN_ADDRESS } from "@/utils";
+import CourseCard from "./CourceCard";
 
 interface Course {
   web2CourseId: string;
@@ -19,6 +18,8 @@ interface Course {
   isActive: boolean;
   creator: string;
 }
+
+const { useIsActive } = hooks;
 
 export default function CourseMarketPage() {
   const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
@@ -39,7 +40,8 @@ export default function CourseMarketPage() {
 
   const [purchaseId, setPurchaseId] = useState<string>("");
   const [message, setMessage] = useState<string>("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const isActive = useIsActive();
+  console.log("MetaMask Store State:", metaMaskStore.getState(), isActive);
 
   useEffect(() => {
     if (typeof window.ethereum !== "undefined") {
@@ -256,27 +258,11 @@ export default function CourseMarketPage() {
       setMessage(err.reason || err.message || "操作失败");
     }
   };
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
 
-  return (
+  return isActive ? (
     <div className="min-h-screen bg-gray-900 text-white p-8">
-      <MetaMaskCard />
-      <button
-        onClick={openModal}
-        className="px-4 py-2 bg-yellow-600 rounded hover:bg-yellow-500"
-      >
-        兑换webai
-      </button>
-
       <div className="container mx-auto">
         <h1 className="text-3xl font-bold mb-6">课程市场</h1>
-        {account && <p>当前账户：{account}</p>}
-
         {message && (
           <div
             className={`mb-4 p-4 rounded ${
@@ -288,30 +274,11 @@ export default function CourseMarketPage() {
         )}
 
         <h2 className="text-2xl font-semibold mb-4">所有课程列表</h2>
-        <table className="w-full table-auto border bg-gray-800 text-white mb-8">
-          <thead className="bg-gray-700">
-            <tr>
-              <th>#</th>
-              <th>Web2 Course ID</th>
-              <th>Name</th>
-              <th>Price (YD)</th>
-              <th>Is Active</th>
-              <th>Creator</th>
-            </tr>
-          </thead>
-          <tbody>
-            {courses.map((course, index) => (
-              <tr key={course.web2CourseId}>
-                <td>{index + 1}</td>
-                <td>{course.web2CourseId}</td>
-                <td>{course.name}</td>
-                <td>{course.price}</td>
-                <td>{course.isActive ? "Yes" : "No"}</td>
-                <td>{course.creator}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {courses.map((course, index) => (
+            <CourseCard course={course} key={index} />
+          ))}
+        </div>
 
         <h2 className="text-2xl font-semibold mb-4">已购买课程</h2>
         <ul className="list-disc pl-8">
@@ -374,14 +341,8 @@ export default function CourseMarketPage() {
           </div>
         </>
       )}
-      {isModalOpen && (
-        <ExchangeModal
-          onClose={closeModal}
-          ydTokenContract={ydTokenContract}
-          signer={signer}
-          account={account}
-        />
-      )}
     </div>
+  ) : (
+    <ConnectPage />
   );
 }

@@ -83,3 +83,7 @@ export function getName(connector: Connector) {
 export function getLibrary(provider: any): Web3Provider {
   return new Web3Provider(provider);
 }
+
+export const CONTRACT_ADDRESS = "0xC926e252e31Ea9450230decd200F6538133DA0a0";
+
+export const YD_TOKEN_ADDRESS = "0x4Ee7e7E6104451c65ecFe94B6878e1025B02ccA8";

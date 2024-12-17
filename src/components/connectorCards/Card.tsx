@@ -44,6 +44,7 @@ export function Card({
         overflow: "auto",
         border: "1px solid",
         borderRadius: "1rem",
+        color: "black",
       }}
     >
       <b>{getName(connector)}</b>
