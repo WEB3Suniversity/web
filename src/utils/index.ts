@@ -1,28 +1,31 @@
-import type { Connector } from '@web3-react/types';
-import { MetaMask } from '@web3-react/metamask';
-
+import type { Connector } from "@web3-react/types";
+import { MetaMask } from "@web3-react/metamask";
+import { Web3Provider } from "@ethersproject/providers";
 /**
  * 格式化日期
  * @param date Date对象或时间戳
  * @param format 格式化模板，如 'YYYY-MM-DD HH:mm:ss'
  */
-export const formatDate = (date: Date | number | string, format: string = 'YYYY-MM-DD'): string => {
+export const formatDate = (
+  date: Date | number | string,
+  format: string = "YYYY-MM-DD"
+): string => {
   const d = new Date(date);
 
   const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  const hours = String(d.getHours()).padStart(2, '0');
-  const minutes = String(d.getMinutes()).padStart(2, '0');
-  const seconds = String(d.getSeconds()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  const hours = String(d.getHours()).padStart(2, "0");
+  const minutes = String(d.getMinutes()).padStart(2, "0");
+  const seconds = String(d.getSeconds()).padStart(2, "0");
 
   return format
-    .replace('YYYY', String(year))
-    .replace('MM', month)
-    .replace('DD', day)
-    .replace('HH', hours)
-    .replace('mm', minutes)
-    .replace('ss', seconds);
+    .replace("YYYY", String(year))
+    .replace("MM", month)
+    .replace("DD", day)
+    .replace("HH", hours)
+    .replace("mm", minutes)
+    .replace("ss", seconds);
 };
 
 /**
@@ -30,7 +33,7 @@ export const formatDate = (date: Date | number | string, format: string = 'YYYY-
  * @param obj 要拷贝的对象
  */
 export const deepClone = <T>(obj: T): T => {
-  if (obj === null || typeof obj !== 'object') {
+  if (obj === null || typeof obj !== "object") {
     return obj;
   }
 
@@ -57,7 +60,10 @@ export const deepClone = <T>(obj: T): T => {
  * @param fn 要执行的函数
  * @param delay 延迟时间(ms)
  */
-export const debounce = <T extends (...args: number[]) => string>(fn: T, delay: number) => {
+export const debounce = <T extends (...args: number[]) => string>(
+  fn: T,
+  delay: number
+) => {
   let timer: NodeJS.Timeout | null = null;
 
   return function (this: unknown, ...args: Parameters<T>) {
@@ -69,6 +75,11 @@ export const debounce = <T extends (...args: number[]) => string>(fn: T, delay: 
   };
 };
 export function getName(connector: Connector) {
-  if (connector instanceof MetaMask) return 'MetaMask';
-  return 'Unknown';
+  if (connector instanceof MetaMask) return "MetaMask";
+  return "Unknown";
+}
+
+// 用于返回 Web3Provider 实例
+export function getLibrary(provider: any): Web3Provider {
+  return new Web3Provider(provider);
 }
