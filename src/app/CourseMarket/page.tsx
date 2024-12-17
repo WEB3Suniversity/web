@@ -262,7 +262,7 @@ export default function CourseMarketPage() {
   return isActive ? (
     <div className="min-h-screen bg-gray-900 text-white p-8">
       <div className="container mx-auto">
-        <h1 className="text-3xl font-bold mb-6">课程市场</h1>
+        <h1 className="text-3xl font-bold mb-6">Course Marketplace</h1>
         {message && (
           <div
             className={`mb-4 p-4 rounded ${
@@ -273,20 +273,27 @@ export default function CourseMarketPage() {
           </div>
         )}
 
-        <h2 className="text-2xl font-semibold mb-4">所有课程列表</h2>
+        <h2 className="text-2xl font-semibold mb-4">All Courses</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {courses.map((course, index) => (
-            <CourseCard course={course} key={index} />
+            <CourseCard
+              course={course}
+              key={index}
+              isPurchased={purchasedCourses.some(
+                (p) => p.web2CourseId === course.web2CourseId
+              )}
+            />
           ))}
         </div>
 
         <h2 className="text-2xl font-semibold mb-4">已购买课程</h2>
-        <ul className="list-disc pl-8">
+        <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {purchasedCourses.length > 0 ? (
             purchasedCourses.map((course, index) => (
-              <li key={index} className="mb-2">
-                {course.name} (ID: {course.web2CourseId})
-              </li>
+              // <li key={index} className="mb-2">
+              //   {course.name} (ID: {course.web2CourseId})
+              // </li>
+              <CourseCard course={course} key={index} isPurchased={true} />
             ))
           ) : (
             <p>您还没有购买任何课程。</p>

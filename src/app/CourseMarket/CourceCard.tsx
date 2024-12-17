@@ -3,7 +3,13 @@ import { hooks } from "@/connections/metaMask";
 
 const { useAccounts } = hooks;
 
-const CourseCard = ({ course }: { course: any }) => {
+const CourseCard = ({
+  course,
+  isPurchased,
+}: {
+  course: any;
+  isPurchased: boolean;
+}) => {
   const accounts = useAccounts(); // 获取当前钱包地址
   const currentAccount = accounts?.[0]; // 获取第一个钱包地址
   const [cartCount, setCartCount] = useState(0);
@@ -98,9 +104,14 @@ const CourseCard = ({ course }: { course: any }) => {
           ) : (
             <button
               onClick={handleBuy}
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+              disabled={isPurchased}
+              className={`w-full font-bold py-2 px-4 rounded ${
+                isPurchased
+                  ? "bg-gray-500 cursor-not-allowed"
+                  : "bg-blue-500 hover:bg-blue-600"
+              }`}
             >
-              Buy Now
+              {isPurchased ? "Purchased" : "Buy Now"}
             </button>
           )}
         </div>
@@ -131,27 +142,27 @@ const CourseCard = ({ course }: { course: any }) => {
           )}
         </div>
       </div>
-      {/* {isAnimating && ( */}
-      <div
-        className="absolute z-50 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center transition-all duration-1000 ease-in-out"
-        style={flyIconStyle as React.CSSProperties}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth="1.5"
-          stroke="currentColor"
-          className="w-8 h-8"
+      {isAnimating && (
+        <div
+          className="absolute z-50 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center transition-all duration-1000 ease-in-out"
+          style={flyIconStyle as React.CSSProperties}
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M2.25 3h1.386a.75.75 0 01.71.518l3.021 9.064a1.5 1.5 0 001.426 1.018h8.698a1.5 1.5 0 001.426-1.018l2.25-6.75a.75.75 0 00-.711-.982H6.75m0 0L5.613 3.518A.75.75 0 004.905 3H2.25m4.5 0h12.75M9 20.25a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm7.5 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"
-          />
-        </svg>
-      </div>
-      {/* //   )} */}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="currentColor"
+            className="w-8 h-8"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M2.25 3h1.386a.75.75 0 01.71.518l3.021 9.064a1.5 1.5 0 001.426 1.018h8.698a1.5 1.5 0 001.426-1.018l2.25-6.75a.75.75 0 00-.711-.982H6.75m0 0L5.613 3.518A.75.75 0 004.905 3H2.25m4.5 0h12.75M9 20.25a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm7.5 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"
+            />
+          </svg>
+        </div>
+      )}
     </div>
   );
 };
