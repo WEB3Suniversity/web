@@ -8,6 +8,7 @@ import MetaMaskCard from "@/components/connectorCards/MetaMaskCard";
 // 请替换为您的YD代币地址和ABI
 const YD_TOKEN_ADDRESS = "0x4Ee7e7E6104451c65ecFe94B6878e1025B02ccA8";
 import { YD_TOKEN_ABI } from "@/utils/YiDengToKen_ABI";
+import ExchangeModal from "@/components/CourseMarketPage";
 
 const CONTRACT_ADDRESS = "0xC926e252e31Ea9450230decd200F6538133DA0a0";
 
@@ -38,6 +39,7 @@ export default function CourseMarketPage() {
 
   const [purchaseId, setPurchaseId] = useState<string>("");
   const [message, setMessage] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     if (typeof window.ethereum !== "undefined") {
@@ -254,15 +256,21 @@ export default function CourseMarketPage() {
       setMessage(err.reason || err.message || "操作失败");
     }
   };
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-8">
       <MetaMaskCard />
       <button
-        onClick={handleApprove}
+        onClick={openModal}
         className="px-4 py-2 bg-yellow-600 rounded hover:bg-yellow-500"
       >
-        授权 YD 代币
+        兑换webai
       </button>
 
       <div className="container mx-auto">
@@ -365,6 +373,14 @@ export default function CourseMarketPage() {
             </button>
           </div>
         </>
+      )}
+      {isModalOpen && (
+        <ExchangeModal
+          onClose={closeModal}
+          ydTokenContract={ydTokenContract}
+          signer={signer}
+          account={account}
+        />
       )}
     </div>
   );
