@@ -38,7 +38,6 @@ export default function WalletConnect() {
 
   // 断开连接
   const disconnect = useCallback(async () => {
-    debugger
     try {
       // 直接重置状态
       await connector.resetState()
