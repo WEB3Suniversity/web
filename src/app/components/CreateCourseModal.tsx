@@ -6,6 +6,7 @@ import { hooks } from '@/app/providers/Web3Provider';
 const MARKETPLACE_ABI = [
   "function createCourse(string name, uint256 price, string description) external",
 ];
+const MARKETPLACE_ADDRESS = process.env.NEXT_PUBLIC_MARKETPLACE_ADDRESS || '';
 
 interface CreateCourseModalProps {
   isOpen: boolean;
@@ -14,10 +15,10 @@ interface CreateCourseModalProps {
 }
 
 export default function CreateCourseModal({ isOpen, onClose, onSuccess }: CreateCourseModalProps) {
-  const { useProvider, useAccounts, useIsActive } = hooks;
+  const { useProvider, useAccounts } = hooks;
   const provider = useProvider();
   const accounts = useAccounts();
-  const isActive = useIsActive();
+  
 
   const [formData, setFormData] = useState({
     name: '',
@@ -40,7 +41,7 @@ export default function CreateCourseModal({ isOpen, onClose, onSuccess }: Create
 
       const signer = provider.getSigner();
       const contract = new ethers.Contract(
-        '0x230d9211950514cC81048716D445931cf44206C7',
+        MARKETPLACE_ADDRESS,
         MARKETPLACE_ABI,
         signer
       );

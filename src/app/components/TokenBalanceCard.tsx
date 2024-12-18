@@ -1,4 +1,3 @@
-// app/components/TokenBalanceCard.tsx
 import { useState } from 'react';
 import TransferModal from './TransferModal';
 

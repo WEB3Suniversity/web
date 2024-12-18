@@ -1,4 +1,3 @@
-// app/components/CourseInterface.tsx
 import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { hooks } from '@/app/providers/Web3Provider';
@@ -20,8 +19,9 @@ const TOKEN_ABI = [
 ];
 
 // 合约地址
-const MARKETPLACE_ADDRESS = '0x230d9211950514cC81048716D445931cf44206C7';
-const TOKEN_ADDRESS = '0x7f22a42b561a6f09fd0B1b4BB8986A47778f383A';
+const MARKETPLACE_ADDRESS = process.env.NEXT_PUBLIC_MARKETPLACE_ADDRESS || '';
+// 代币合约地址
+const NEXT_PUBLIC_TOKEN_ADDRESS = process.env.NEXT_PUBLIC_TOKEN_ADDRESS;
 
 export default function CourseInterface() {
   const { useProvider, useAccounts, useIsActive } = hooks;
@@ -42,9 +42,9 @@ export default function CourseInterface() {
 
   // 初始化合约
   useEffect(() => {
-    if (provider && MARKETPLACE_ADDRESS && TOKEN_ADDRESS) {
+    if (provider && MARKETPLACE_ADDRESS && NEXT_PUBLIC_TOKEN_ADDRESS) {
       const marketplace = new ethers.Contract(MARKETPLACE_ADDRESS, MARKETPLACE_ABI, provider);
-      const token = new ethers.Contract(TOKEN_ADDRESS, TOKEN_ABI, provider);
+      const token = new ethers.Contract(NEXT_PUBLIC_TOKEN_ADDRESS, TOKEN_ABI, provider);
       setMarketplaceContract(marketplace);
       setTokenContract(token);
     }
