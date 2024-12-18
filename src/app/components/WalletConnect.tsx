@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { hooks, metaMask } from '@/app/providers/Web3Provider'
 import { type BigNumber } from '@ethersproject/bignumber'
 import { formatEther } from '@ethersproject/units'
+import { useWeb3React } from '@web3-react/core'
 
 const {
   useChainId,
@@ -19,6 +20,7 @@ export default function WalletConnect() {
   const isActivating = useIsActivating()
   const isActive = useIsActive()
   const provider = useProvider()
+  const { connector } = useWeb3React()
 
   const [error, setError] = useState<Error | undefined>(undefined)
   const [balance, setBalance] = useState<string>('')
@@ -36,14 +38,14 @@ export default function WalletConnect() {
 
   // 断开连接
   const disconnect = useCallback(async () => {
+    debugger
     try {
-      if (metaMask?.deactivate) {
-        await metaMask.deactivate()
-      }
-    } catch (err) {
-      console.error('断开连接错误:', err)
+      // 直接重置状态
+      await connector.resetState()
+    } catch (error) {
+      console.error('断开连接失败:', error)
     }
-  }, [])
+  }, [connector])
 
   // 获取余额
   useEffect(() => {
