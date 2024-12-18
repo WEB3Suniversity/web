@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ethers, utils } from 'ethers';
 import { hooks } from '@/app/providers/Web3Provider';
+import TokenBalanceCard from './TokenBalanceCard';
 
 // 合约 ABI 定义了我们需要与合约交互的函数接口
 const TOKEN_ABI = [
@@ -12,7 +13,7 @@ const TOKEN_ABI = [
 ];
 
 // 从环境变量获取代币合约地址
-const TOKEN_ADDRESS = '0x7f22a42b561a6f09fd0B1b4BB8986A47778f383A' || '';
+const TOKEN_ADDRESS = '0x7f22a42b561a6f09fd0B1b4BB8986A47778f383A';
 
 export default function TokenInterface() {
   // 使用 web3-react hooks 获取必要的连接信息
@@ -140,72 +141,17 @@ export default function TokenInterface() {
   }
 
   return (
-    <div className="max-w-lg mx-auto p-6 space-y-6">
-      <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-2xl font-bold mb-4">{tokenInfo.name} ({tokenInfo.symbol})</h2>
-        
-        <div className="mb-6">
-          <h3 className="text-lg font-medium mb-2">当前余额</h3>
-          <p className="text-3xl font-bold">
-            {balance} {tokenInfo.symbol}
-          </p>
-        </div>
-
-        <form onSubmit={handleTransfer} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              接收地址
-            </label>
-            <input
-              type="text"
-              value={recipientAddress}
-              onChange={(e) => setRecipientAddress(e.target.value)}
-              className="w-full p-2 border rounded"
-              placeholder="0x..."
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              转账数量
-            </label>
-            <input
-              type="number"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              className="w-full p-2 border rounded"
-              placeholder="0.0"
-              step="0.000000000000000001"
-              required
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={isLoading}
-            className={`w-full py-2 px-4 rounded font-medium ${
-              isLoading
-                ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-blue-600 hover:bg-blue-700 text-white'
-            }`}
-          >
-            {isLoading ? '处理中...' : '转账'}
-          </button>
-        </form>
-
-        {error && (
-          <div className="mt-4 p-3 bg-red-100 text-red-700 rounded">
-            {error}
-          </div>
-        )}
-
-        {successMessage && (
-          <div className="mt-4 p-3 bg-green-100 text-green-700 rounded">
-            {successMessage}
-          </div>
-        )}
-      </div>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <TokenBalanceCard
+        balance={balance}
+        symbol={tokenInfo.symbol}
+        onTransferSuccess={async () => {
+          if (tokenContract && account) {
+            const newBalance = await tokenContract.balanceOf(account);
+            setBalance(utils.formatEther(newBalance));
+          }
+        }}
+      />
     </div>
   );
 }

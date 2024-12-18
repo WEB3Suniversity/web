@@ -10,15 +10,19 @@ const WalletConnect = dynamic(
 
 export default function Home() {
   return (
-    <main className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-6">代币与课程管理</h1>
-      <WalletConnect />
-      <div className="mt-8">
+    <main className="min-h-screen bg-gray-50">
+      <div className="container mx-auto p-4 space-y-6">
+        <h1 className="text-3xl font-bold text-gray-900">Web3大学课程平台</h1>
+        
+        {/* 钱包连接 */}
+        <WalletConnect />
+        
+        {/* 代币信息 */}
         <TokenInterface />
-      </div>
-      <div className="mt-8">
+        
+        {/* 课程列表 */}
         <CourseInterface />
       </div>
     </main>
-  )
+  );
 }

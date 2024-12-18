@@ -47,9 +47,14 @@ export default function CourseInterface() {
       const token = new ethers.Contract(TOKEN_ADDRESS, TOKEN_ABI, provider);
       setMarketplaceContract(marketplace);
       setTokenContract(token);
-      fetchCourses();
     }
   }, [provider]);
+  // 添加新的useEffect来处理课程加载
+  useEffect(() => {
+    if (marketplaceContract && isActive) {
+      fetchCourses();
+    }
+  }, [marketplaceContract, isActive, account]);
 
   // 获取所有课程
   const fetchCourses = async () => {
@@ -57,12 +62,27 @@ export default function CourseInterface() {
 
     try {
       setLoading(true);
+      setError('');
+      
+      console.log("开始获取课程...");
       const courseCount = await marketplaceContract.courseCount();
+      console.log("课程总数:", courseCount.toString());
+      
       const coursesData = [];
 
       for (let i = 1; i <= courseCount.toNumber(); i++) {
+        console.log(`获取第 ${i} 个课程...`);
         const course = await marketplaceContract.getCourse(i);
         const purchased = account ? await marketplaceContract.hasPurchasedCourse(account, i) : false;
+        
+        console.log("课程信息:", {
+          id: i,
+          name: course.name,
+          price: ethers.utils.formatEther(course.price),
+          isActive: course.isActive,
+          description: course.description,
+          instructor: course.instructor
+        });
         
         coursesData.push({
           id: i,
@@ -75,6 +95,7 @@ export default function CourseInterface() {
         });
       }
 
+      console.log("获取到的所有课程:", coursesData);
       setCourses(coursesData);
     } catch (err) {
       console.error('获取课程失败:', err);
@@ -159,13 +180,6 @@ export default function CourseInterface() {
               </svg>
               创建课程
             </button>
-          </div>
-        </div>
-
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900">课程列表</h2>
-          <div className="flex items-center space-x-4">
-            <span className="text-sm text-gray-500">课程总数: {courses.length}</span>
           </div>
         </div>
 
