@@ -1,25 +1,22 @@
-// app/components/CreateCourseModal.tsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { hooks } from '@/app/providers/Web3Provider';
 
 const MARKETPLACE_ABI = [
   "function createCourse(string name, uint256 price, string description) external",
+  "function owner() view returns (address)",
 ];
+
+// 合约地址
 const MARKETPLACE_ADDRESS = process.env.NEXT_PUBLIC_MARKETPLACE_ADDRESS || '';
 
-interface CreateCourseModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSuccess: () => void;
-}
-
-export default function CreateCourseModal({ isOpen, onClose, onSuccess }: CreateCourseModalProps) {
+export default function CreateCourseModal({ isOpen, onClose, onSuccess }) {
   const { useProvider, useAccounts } = hooks;
   const provider = useProvider();
   const accounts = useAccounts();
-  
+  const account = accounts?.[0];
 
+  const [isOwner, setIsOwner] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     price: '',
@@ -28,10 +25,37 @@ export default function CreateCourseModal({ isOpen, onClose, onSuccess }: Create
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // 检查所有权
+  useEffect(() => {
+    const checkOwnership = async () => {
+      if (provider && account) {
+        try {
+          const contract = new ethers.Contract(
+            MARKETPLACE_ADDRESS,
+            MARKETPLACE_ABI,
+            provider
+          );
+          const ownerAddress = await contract.owner();
+          setIsOwner(ownerAddress.toLowerCase() === account.toLowerCase());
+        } catch (err) {
+          console.error('检查所有权失败:', err);
+          setIsOwner(false);
+        }
+      }
+    };
+
+    checkOwnership();
+  }, [provider, account]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!provider || !accounts?.[0]) {
       setError('请先连接钱包');
+      return;
+    }
+
+    if (!isOwner) {
+      setError('只有合约所有者可以创建课程');
       return;
     }
 
@@ -45,7 +69,7 @@ export default function CreateCourseModal({ isOpen, onClose, onSuccess }: Create
         MARKETPLACE_ABI,
         signer
       );
-
+      
       // 将价格转换为wei
       const priceInWei = ethers.utils.parseEther(formData.price);
 
@@ -68,7 +92,7 @@ export default function CreateCourseModal({ isOpen, onClose, onSuccess }: Create
     }
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || !isOwner) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">

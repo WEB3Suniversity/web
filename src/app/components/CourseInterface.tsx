@@ -9,7 +9,8 @@ const MARKETPLACE_ABI = [
   "function hasPurchasedCourse(address _student, uint256 _courseId) view returns (bool)",
   "function purchaseCourse(uint256 _courseId)",
   "function courseCount() view returns (uint256)",
-  "function courses(uint256) view returns (string name, uint256 price, bool isActive, string description, address instructor)"
+  "function courses(uint256) view returns (string name, uint256 price, bool isActive, string description, address instructor)",
+  "function owner() view returns (address)"
 ];
 
 // Token ABI (用于授权)
@@ -30,6 +31,9 @@ export default function CourseInterface() {
   const isActive = useIsActive();
   const account = accounts?.[0];
 
+  // 添加合约所有者状态
+  const [isOwner, setIsOwner] = useState(false);
+
   // 状态管理
   const [marketplaceContract, setMarketplaceContract] = useState<ethers.Contract | null>(null);
   const [tokenContract, setTokenContract] = useState<ethers.Contract | null>(null);
@@ -49,6 +53,24 @@ export default function CourseInterface() {
       setTokenContract(token);
     }
   }, [provider]);
+
+  // 检查当前用户是否是合约所有者
+  useEffect(() => {
+    const checkOwnership = async () => {
+      if (marketplaceContract && account) {
+        try {
+          const ownerAddress = await marketplaceContract.owner();
+          setIsOwner(ownerAddress.toLowerCase() === account.toLowerCase());
+        } catch (err) {
+          console.error('检查所有权失败:', err);
+          setIsOwner(false);
+        }
+      }
+    };
+
+    checkOwnership();
+  }, [marketplaceContract, account]);
+
   // 添加新的useEffect来处理课程加载
   useEffect(() => {
     if (marketplaceContract && isActive) {
@@ -171,15 +193,17 @@ export default function CourseInterface() {
           <h2 className="text-3xl font-bold text-gray-900">课程列表</h2>
           <div className="flex items-center space-x-4">
             <span className="text-sm text-gray-500">课程总数: {courses.length}</span>
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
-            >
-              <svg className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-              </svg>
-              创建课程
-            </button>
+            {isOwner && (
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+              >
+                <svg className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                创建课程
+              </button>
+            )}
           </div>
         </div>
 
@@ -285,13 +309,15 @@ export default function CourseInterface() {
           </div>
         )}
 
-        <CreateCourseModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          onSuccess={() => {
-            fetchCourses();
-          }}
-        />
+        {isOwner && (
+          <CreateCourseModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            onSuccess={() => {
+              fetchCourses();
+            }}
+          />
+        )}
       </div>
     </div>
   );
