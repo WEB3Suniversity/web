@@ -31,7 +31,7 @@ const CourseGrid = ({ courses }: CourseGridProps) => {
   const { abi, networks } = abiJSON;
   const { address: accountArress, isConnected } = useAccount();
   const chainId = getChainId(config);
-  const address = networks[chainId].address;
+  const address = networks[chainId]?.address;
 
   const onPurchase = debounce((courseId: string) => {
     try {

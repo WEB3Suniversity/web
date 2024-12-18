@@ -50,7 +50,7 @@ const CourseCard = ({
       
       <div className="p-6">
         <div className="flex gap-2 mb-3">
-          {tags.map((tag, index) => (
+          {tags?.map((tag, index) => (
             <Tag key={index} variant="blue">{tag}</Tag>
           ))}
         </div>
