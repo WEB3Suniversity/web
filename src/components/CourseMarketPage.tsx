@@ -1,16 +1,15 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { metaMaskStore } from "@/connections/metaMask";
-import { YD_TOKEN_ADDRESS } from "@/utils";
+import { getEthereumProvider, isClient, YD_TOKEN_ADDRESS } from "@/utils";
 // import { CONTRACT_ABI } from "@/utils/CONTRACT_ABI";
 import { YD_TOKEN_ABI } from "@/utils/YiDengToKen_ABI";
 // const { useIsActive } = hooks;
 
 interface ExchangeModalProps {
   onClose: () => void;
-  ydTokenContract: ethers.Contract | null;
-  signer: ethers.JsonRpcSigner | null;
-  account: string | null;
 }
 
 const ExchangeModal: React.FC<ExchangeModalProps> = ({ onClose }) => {
@@ -26,28 +25,32 @@ const ExchangeModal: React.FC<ExchangeModalProps> = ({ onClose }) => {
   console.log("MetaMask Store State:", metaMaskStore.getState());
   useEffect(() => {
     const init = async () => {
-      if (!window.ethereum) {
-        console.error("MetaMask 未安装");
-        return;
+      if (isClient()) {
+        if (!window.ethereum) {
+          console.error("MetaMask 未安装");
+          return;
+        }
+        const ethProvider = getEthereumProvider();
+        if (!ethProvider) return;
+        // const ethProvider = new ethers.BrowserProvider(
+        //   window.ethereum as unknown as ethers.Eip1193Provider
+        // );
+        const signer = await ethProvider.getSigner();
+        const accountAddress = await signer.getAddress();
+        const tokenInstance = new ethers.Contract(
+          YD_TOKEN_ADDRESS,
+          YD_TOKEN_ABI,
+          signer
+        );
+        // const contractInstance = new ethers.Contract(
+        //   CONTRACT_ADDRESS,
+        //   CONTRACT_ABI,
+        //   signer
+        // );
+        setSigner(signer);
+        setAccount(accountAddress);
+        setYdTokenContract(tokenInstance);
       }
-      const ethProvider = new ethers.BrowserProvider(
-        window.ethereum as unknown as ethers.Eip1193Provider
-      );
-      const signer = await ethProvider.getSigner();
-      const accountAddress = await signer.getAddress();
-      const tokenInstance = new ethers.Contract(
-        YD_TOKEN_ADDRESS,
-        YD_TOKEN_ABI,
-        signer
-      );
-      // const contractInstance = new ethers.Contract(
-      //   CONTRACT_ADDRESS,
-      //   CONTRACT_ABI,
-      //   signer
-      // );
-      setSigner(signer);
-      setAccount(accountAddress);
-      setYdTokenContract(tokenInstance);
     };
     init();
   }, []);
@@ -73,8 +76,8 @@ const ExchangeModal: React.FC<ExchangeModalProps> = ({ onClose }) => {
       alert("兑换成功！");
       onClose();
     } catch (error: unknown) {
-      console.error("兑换失败:", error.message);
-      alert("兑换失败: " + error.message);
+      const err = error as Error; // 类型断言为 Error
+      console.error("兑换失败:", err.message);
     }
   };
 

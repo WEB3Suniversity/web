@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { YD_TOKEN_ABI } from "@/utils/YiDengToKen_ABI";
-
-import { CONTRACT_ADDRESS } from "@/utils";
+import { CONTRACT_ADDRESS, getEthereumProvider, isClient } from "@/utils";
 
 interface ContractData {
   MAX_SUPPLY?: string;
@@ -22,38 +21,31 @@ interface ContractData {
   symbol?: string;
 }
 
-export default function ContractMethods() {
-  // const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
+export default function YIDengToken() {
   const [readOnlyContract, setReadOnlyContract] =
     useState<ethers.Contract | null>(null);
   const [account] = useState<string | null>(null);
   const [data, setData] = useState<ContractData>({});
 
   useEffect(() => {
-    if (!window.ethereum) {
-      console.error("MetaMask not detected");
-      return;
-    }
-    if (typeof window.ethereum !== "undefined") {
-      const ethProvider = new ethers.BrowserProvider(
-        window.ethereum as ethers.Eip1193Provider
-      );
+    if (isClient() && window.ethereum) {
+      const ethProvider = getEthereumProvider();
+      if (!ethProvider) return;
+
       const readOnly = new ethers.Contract(
         CONTRACT_ADDRESS,
         YD_TOKEN_ABI,
         ethProvider
       );
-      // setAccount(accounts[0]);
-
       setReadOnlyContract(readOnly);
-    } else {
+    } else if (!window.ethereum) {
       console.error("请安装MetaMask");
     }
   }, []);
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!readOnlyContract) return;
+      if (!readOnlyContract || !account) return;
 
       try {
         const [

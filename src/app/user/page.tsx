@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 import { NFT_ABI } from "@/utils/NFT_ABI";
-import { NFT_CONTRACT_ADDRESS } from "@/utils";
+import { getEthereumProvider, isClient, NFT_CONTRACT_ADDRESS } from "@/utils";
 import Avatar from "@/components/Jazzicon";
 interface CustomDeferredTopicFilter {
   address?: string;
@@ -33,15 +33,16 @@ export default function UserPage() {
   }, [router]);
 
   const fetchNFTs = async (account: string) => {
-    if (!window.ethereum) {
-      console.error("Ethereum provider not found");
+    if (!isClient()) {
       return;
     }
 
     try {
-      const provider = new ethers.BrowserProvider(
-        window.ethereum as unknown as ethers.Eip1193Provider
-      );
+      const provider = getEthereumProvider();
+
+      // const provider = new ethers.BrowserProvider(
+      //   window.ethereum as unknown as ethers.Eip1193Provider
+      // );
 
       if (!provider) throw new Error("Provider initialization failed");
 

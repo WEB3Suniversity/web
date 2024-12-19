@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Eip1193Provider, ethers } from "ethers";
 import { CONTRACT_ABI } from "@/utils/CONTRACT_ABI";
 // import { BigInt } from "ethers"; // 正确导入 BigNumber
@@ -10,6 +10,7 @@ import { hooks, metaMaskStore } from "@/connections/metaMask";
 import {
   CONTRACT_ADDRESS,
   generateNftMetadata,
+  isClient,
   NFT_CONTRACT_ADDRESS,
   YD_TOKEN_ADDRESS,
 } from "@/utils";
@@ -49,74 +50,67 @@ export default function CourseMarketPage() {
   console.log("MetaMask Store State:", metaMaskStore.getState(), isActive);
   console.log(account, ";account-account");
 
-  // useEffect(() => {
-  //   if (typeof window.ethereum !== "undefined") {
-  //     const ethProvider = new ethers.BrowserProvider(window.ethereum);
-  //     // setProvider(ethProvider);
-  //   } else {
-  //     console.error("请安装MetaMask");
-  //   }
-  // }, []);
-
   useEffect(() => {
-    const init = async () => {
-      const { ethereum } = window;
-      try {
-        if (!ethereum) return;
-        const ethProvider = new ethers.BrowserProvider(
-          ethereum as unknown as Eip1193Provider
-        );
-        await ethProvider.send("eth_requestAccounts", []);
-        const signer = await ethProvider.getSigner();
-        const accountAddress = await signer.getAddress();
+    if (isClient()) {
+      const init = async () => {
+        const { ethereum } = window;
+        try {
+          if (!ethereum) return;
+          const ethProvider = new ethers.BrowserProvider(
+            ethereum as unknown as Eip1193Provider
+          );
+          await ethProvider.send("eth_requestAccounts", []);
+          const signer = await ethProvider.getSigner();
+          const accountAddress = await signer.getAddress();
 
-        console.log("Account Address:", accountAddress);
+          console.log("Account Address:", accountAddress);
 
-        const contractInstance = new ethers.Contract(
-          CONTRACT_ADDRESS,
-          CONTRACT_ABI,
-          signer
-        );
-        const tokenInstance = new ethers.Contract(
-          YD_TOKEN_ADDRESS,
-          YD_TOKEN_ABI,
-          signer
-        );
-        const nftInstance = new ethers.Contract(
-          NFT_CONTRACT_ADDRESS,
-          NFT_ABI,
-          signer
-        );
+          const contractInstance = new ethers.Contract(
+            CONTRACT_ADDRESS,
+            CONTRACT_ABI,
+            signer
+          );
+          const tokenInstance = new ethers.Contract(
+            YD_TOKEN_ADDRESS,
+            YD_TOKEN_ABI,
+            signer
+          );
+          const nftInstance = new ethers.Contract(
+            NFT_CONTRACT_ADDRESS,
+            NFT_ABI,
+            signer
+          );
 
-        console.log("Course Contract Address:", contractInstance.target);
-        console.log("YD Token Contract Address:", tokenInstance.target);
+          console.log("Course Contract Address:", contractInstance.target);
+          console.log("YD Token Contract Address:", tokenInstance.target);
 
-        // setProvider(ethProvider);
-        // setSigner(signer);
-        setAccount(accountAddress);
-        setContract(contractInstance);
-        setYdTokenContract(tokenInstance);
-        setNftContract(nftInstance);
-        // 检查是否是合约所有者
-        const contractOwner = await contractInstance.owner();
-        setIsOwner(
-          contractOwner.toLowerCase() === accountAddress.toLowerCase()
-        );
-        console.log("合约所有者:", contractOwner);
-        // 获取课程数量
-        const count = await contractInstance.courseCount();
-        console.log("课程总数:", count.toString());
-        setCourseCount(Number(count));
-      } catch (error) {
-        console.error("初始化失败:", error);
-      }
-    };
-
-    init();
+          // setProvider(ethProvider);
+          // setSigner(signer);
+          setAccount(accountAddress);
+          setContract(contractInstance);
+          setYdTokenContract(tokenInstance);
+          setNftContract(nftInstance);
+          // 检查是否是合约所有者
+          const contractOwner = await contractInstance.owner();
+          setIsOwner(
+            contractOwner.toLowerCase() === accountAddress.toLowerCase()
+          );
+          console.log("合约所有者:", contractOwner);
+          // 获取课程数量
+          const count = await contractInstance.courseCount();
+          console.log("课程总数:", count.toString());
+          setCourseCount(Number(count));
+        } catch (error) {
+          console.error("初始化失败:", error);
+        }
+      };
+      init();
+    }
   }, []);
-  const loadCourses = async () => {
-    if (courseContract && courseCount > 0 && courses.length === 0) {
-      // 避免重复加载
+  const loadCourses = useCallback(async () => {
+    if (!courseContract) return;
+
+    try {
       const loadedCourses: Course[] = [];
       for (let i = 1; i <= courseCount; i++) {
         const c = await courseContract.courses(i);
@@ -129,9 +123,12 @@ export default function CourseMarketPage() {
         });
       }
       setCourses(loadedCourses);
+    } catch (error) {
+      console.error("加载课程失败：", error);
     }
-  };
-  const loadPurchasedCourses = async () => {
+  }, [courseContract, courseCount, courses.length]);
+
+  const loadPurchasedCourses = useCallback(async () => {
     if (!courseContract || !account) return;
 
     try {
@@ -156,11 +153,11 @@ export default function CourseMarketPage() {
     } catch (error) {
       console.error("加载已购买课程失败：", error);
     }
-  };
+  }, [courseContract, account, courseCount]);
   useEffect(() => {
     loadPurchasedCourses();
     loadCourses();
-  }, [message]);
+  }, [loadPurchasedCourses, loadCourses]);
 
   const handleAddCourse = async () => {
     if (!courseContract) return;

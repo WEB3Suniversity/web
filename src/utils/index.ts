@@ -5,6 +5,7 @@ import {
   JsonRpcFetchFunc,
   Web3Provider,
 } from "@ethersproject/providers";
+import { ethers } from "ethers";
 /**
  * 格式化日期
  * @param date Date对象或时间戳
@@ -133,6 +134,18 @@ export const generateNftMetadata = (
   ).toString("base64")}`;
 };
 
+export const getEthereumProvider = () => {
+  if (typeof window !== "undefined" && window.ethereum) {
+    return new ethers.BrowserProvider(
+      window.ethereum as unknown as ethers.Eip1193Provider
+    );
+  } else {
+    console.error("MetaMask 未安装");
+    return null;
+  }
+};
+
+export const isClient = () => typeof window !== "undefined";
 export const CONTRACT_ADDRESS = "0xC926e252e31Ea9450230decd200F6538133DA0a0";
 
 export const YD_TOKEN_ADDRESS = "0x4Ee7e7E6104451c65ecFe94B6878e1025B02ccA8";
