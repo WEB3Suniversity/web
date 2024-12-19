@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
-import { hooks, metaMaskStore } from "@/connections/metaMask";
-import { CONTRACT_ADDRESS, YD_TOKEN_ADDRESS } from "@/utils";
-import { CONTRACT_ABI } from "@/utils/CONTRACT_ABI";
+import { metaMaskStore } from "@/connections/metaMask";
+import { YD_TOKEN_ADDRESS } from "@/utils";
+// import { CONTRACT_ABI } from "@/utils/CONTRACT_ABI";
 import { YD_TOKEN_ABI } from "@/utils/YiDengToKen_ABI";
-const { useIsActive } = hooks;
+// const { useIsActive } = hooks;
 
 interface ExchangeModalProps {
   onClose: () => void;
@@ -35,11 +35,11 @@ const ExchangeModal: React.FC<ExchangeModalProps> = ({ onClose }) => {
         YD_TOKEN_ABI,
         signer
       );
-      const contractInstance = new ethers.Contract(
-        CONTRACT_ADDRESS,
-        CONTRACT_ABI,
-        signer
-      );
+      // const contractInstance = new ethers.Contract(
+      //   CONTRACT_ADDRESS,
+      //   CONTRACT_ABI,
+      //   signer
+      // );
       setSigner(signer);
       setAccount(accountAddress);
       setYdTokenContract(tokenInstance);
@@ -67,7 +67,7 @@ const ExchangeModal: React.FC<ExchangeModalProps> = ({ onClose }) => {
       await tx.wait();
       alert("兑换成功！");
       onClose();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("兑换失败:", error.message);
       alert("兑换失败: " + error.message);
     }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ethers } from "ethers";
+import { Eip1193Provider, ethers } from "ethers";
 import { CONTRACT_ABI } from "@/utils/CONTRACT_ABI";
 // import { BigInt } from "ethers"; // 正确导入 BigNumber
 // 请替换为您的YD代币地址和ABI
@@ -27,8 +27,8 @@ interface Course {
 const { useIsActive } = hooks;
 
 export default function CourseMarketPage() {
-  const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
-  const [signer, setSigner] = useState<ethers.JsonRpcSigner | null>(null);
+  // const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
+  // const [signer, setSigner] = useState<ethers.JsonRpcSigner | null>(null);
   const [courseContract, setContract] = useState<ethers.Contract | null>(null);
   const [ydTokenContract, setYdTokenContract] =
     useState<ethers.Contract | null>(null);
@@ -49,19 +49,23 @@ export default function CourseMarketPage() {
   console.log("MetaMask Store State:", metaMaskStore.getState(), isActive);
   console.log(account, ";account-account");
 
-  useEffect(() => {
-    if (typeof window.ethereum !== "undefined") {
-      const ethProvider = new ethers.BrowserProvider(window.ethereum);
-      setProvider(ethProvider);
-    } else {
-      console.error("请安装MetaMask");
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (typeof window.ethereum !== "undefined") {
+  //     const ethProvider = new ethers.BrowserProvider(window.ethereum);
+  //     // setProvider(ethProvider);
+  //   } else {
+  //     console.error("请安装MetaMask");
+  //   }
+  // }, []);
 
   useEffect(() => {
     const init = async () => {
+      const { ethereum } = window;
       try {
-        const ethProvider = new ethers.BrowserProvider(window.ethereum);
+        if (!ethereum) return;
+        const ethProvider = new ethers.BrowserProvider(
+          ethereum as unknown as Eip1193Provider
+        );
         await ethProvider.send("eth_requestAccounts", []);
         const signer = await ethProvider.getSigner();
         const accountAddress = await signer.getAddress();
@@ -87,8 +91,8 @@ export default function CourseMarketPage() {
         console.log("Course Contract Address:", contractInstance.target);
         console.log("YD Token Contract Address:", tokenInstance.target);
 
-        setProvider(ethProvider);
-        setSigner(signer);
+        // setProvider(ethProvider);
+        // setSigner(signer);
         setAccount(accountAddress);
         setContract(contractInstance);
         setYdTokenContract(tokenInstance);
@@ -156,10 +160,6 @@ export default function CourseMarketPage() {
   useEffect(() => {
     loadPurchasedCourses();
     loadCourses();
-  }, [courseContract, account, courseCount]);
-  useEffect(() => {
-    loadCourses();
-    loadPurchasedCourses();
   }, [message]);
 
   const handleAddCourse = async () => {
@@ -181,8 +181,21 @@ export default function CourseMarketPage() {
       await tx.wait();
       setShowModal(false);
       setMessage("课程添加成功！");
-    } catch (error: any) {
-      setMessage("添加课程失败：" + (error.reason || error.message));
+    } catch (error: unknown) {
+      if (
+        error &&
+        typeof error === "object" &&
+        "reason" in error &&
+        "message" in error
+      ) {
+        const { reason, message } = error as {
+          reason: string;
+          message: string;
+        };
+        setMessage("添加课程失败：" + (reason || message));
+      } else {
+        setMessage("添加课程失败：未知错误");
+      }
     }
   };
 
@@ -271,9 +284,20 @@ export default function CourseMarketPage() {
       );
       await mintTx.wait();
       setMessage(`NFT 成功铸造，已添加到您的账户！`);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("操作失败:", err);
-      setMessage(err.reason || err.message || "操作失败");
+
+      if (
+        typeof err === "object" &&
+        err !== null &&
+        "reason" in err &&
+        "message" in err
+      ) {
+        const { reason, message } = err as { reason: string; message: string };
+        setMessage(reason || message || "操作失败");
+      } else {
+        setMessage("操作失败：未知错误");
+      }
     }
   };
 
@@ -295,12 +319,14 @@ export default function CourseMarketPage() {
           <h2 className="text-2xl font-semibold text-gray-800 text-white">
             All Courses
           </h2>
-          <button
-            onClick={() => setShowModal(true)}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition duration-300"
-          >
-            添加课程
-          </button>
+          {isOwner && (
+            <button
+              onClick={() => setShowModal(true)}
+              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition duration-300"
+            >
+              添加课程
+            </button>
+          )}
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {courses.map((course, index) => (

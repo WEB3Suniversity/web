@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Article {
+  article_id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  author_address    String
+  title             String
+  content_hash      String
+  course_id         String
+  submission_time   Int
+  votes_for         Int      @default(0)
+  votes_against     Int      @default(0)
+  reward_amount     BigInt   @default(0)
+  status            String   @default("Pending")
+  addtime           Int
+  last_update_time  Int
+  reviews           Review[] // Define a relation to the Review model
+}
+
+model Review {
+  review_id     String   @id @default(auto()) @map("_id") @db.ObjectId
+  article_id    String   @db.ObjectId  // Now also an ObjectId type
+  reviewer_address String
+  support        Boolean  @default(false) // TINYINT(1) becomes Boolean in MongoDB
+  quality_score  Int      @default(0)  // INT(3) as Int in MongoDB
+  vote_time      Int      // Store as an integer timestamp (e.g., Unix timestamp)
+  
+  article        Article  @relation(fields: [article_id], references: [article_id]) // Reference to the Article model
+}

@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { hooks, metaMask } from "@/connections/metaMask";
 import MetaMaskCard from "@/components/connectorCards/MetaMaskCard";
 import ExchangeModal from "@/components/CourseMarketPage";

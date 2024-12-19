@@ -3,9 +3,17 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+
 import { NFT_ABI } from "@/utils/NFT_ABI";
 import { NFT_CONTRACT_ADDRESS } from "@/utils";
 import Avatar from "@/components/Jazzicon";
+interface CustomDeferredTopicFilter {
+  address?: string;
+  fromBlock?: number;
+  toBlock?: number;
+  topics?: Array<string | null>;
+}
 
 export default function UserPage() {
   const [userAccount, setUserAccount] = useState<string | null>(null);
@@ -31,7 +39,10 @@ export default function UserPage() {
     }
 
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      const provider = new ethers.BrowserProvider(
+        window.ethereum as unknown as ethers.Eip1193Provider
+      );
+
       if (!provider) throw new Error("Provider initialization failed");
 
       const contract = new ethers.Contract(
@@ -44,13 +55,17 @@ export default function UserPage() {
       console.log("Fetching logs for account:", account);
 
       // 获取 Transfer 事件日志
-      const transferFilter = contract.filters.Transfer(null, account);
-      const logs = await provider.getLogs({
+      const transferFilter = contract.filters.Transfer(
+        null,
+        account
+      ) as CustomDeferredTopicFilter;
+      const transferFilterObj = {
         address: NFT_CONTRACT_ADDRESS,
         fromBlock: 0,
         toBlock: "latest",
         topics: transferFilter.topics,
-      });
+      };
+      const logs = await provider.getLogs(transferFilterObj);
 
       console.log("Logs:", logs);
 
@@ -125,7 +140,7 @@ export default function UserPage() {
                 key={nft.id}
                 className="bg-[#1e293b] rounded-lg overflow-hidden shadow hover:shadow-lg transition-shadow"
               >
-                <img
+                <Image
                   src={nft.uri}
                   alt={`NFT ${nft.id}`}
                   className="w-full h-48 object-cover"

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { hooks } from "@/connections/metaMask";
 
 const { useAccounts } = hooks;
@@ -8,22 +8,28 @@ const CourseCard = ({
   isPurchased,
   handleApproveAndPurchaseUnified,
 }: {
-  course: any;
+  course: {
+    creator: string;
+    web2CourseId: string;
+    price: string;
+    isActive: boolean;
+    name: string;
+  };
   isPurchased: boolean;
   handleApproveAndPurchaseUnified?: (key: string) => void;
 }) => {
   const accounts = useAccounts(); // 获取当前钱包地址
   const currentAccount = accounts?.[0]; // 获取第一个钱包地址
-  const [cartCount, setCartCount] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [flyIconStyle, setFlyIconStyle] = useState({});
-  const [isCartReady, setIsCartReady] = useState(false);
+  // const [cartCount, setCartCount] = useState(0);
+  // const [isAnimating, setIsAnimating] = useState(false);
+  // const [flyIconStyle, setFlyIconStyle] = useState({});
+  // const [isCartReady, setIsCartReady] = useState(false);
 
   // 确保购物车 DOM 已加载
-  useEffect(() => {
-    const cart = document.getElementById("shopping-cart");
-    if (cart) setIsCartReady(true);
-  }, []);
+  // useEffect(() => {
+  //   const cart = document.getElementById("shopping-cart");
+  //   if (cart) setIsCartReady(true);
+  // }, []);
   // const handleBuy = (event: React.MouseEvent) => {
   //   if (!isCartReady) return;
 
@@ -136,14 +142,14 @@ const CourseCard = ({
               />
             </svg>
           </div>
-          {cartCount > 0 && (
+          {/* {cartCount > 0 && (
             <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
               {cartCount}
             </div>
-          )}
+          )} */}
         </div>
       </div>
-      {isAnimating && (
+      {/* {isAnimating && (
         <div
           className="absolute z-50 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center transition-all duration-1000 ease-in-out"
           style={flyIconStyle as React.CSSProperties}
@@ -163,7 +169,7 @@ const CourseCard = ({
             />
           </svg>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

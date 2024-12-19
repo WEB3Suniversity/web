@@ -1,6 +1,10 @@
 import type { Connector } from "@web3-react/types";
 import { MetaMask } from "@web3-react/metamask";
-import { Web3Provider } from "@ethersproject/providers";
+import {
+  ExternalProvider,
+  JsonRpcFetchFunc,
+  Web3Provider,
+} from "@ethersproject/providers";
 /**
  * 格式化日期
  * @param date Date对象或时间戳
@@ -80,7 +84,9 @@ export function getName(connector: Connector) {
 }
 
 // 用于返回 Web3Provider 实例
-export function getLibrary(provider: any): Web3Provider {
+export function getLibrary(
+  provider: ExternalProvider | JsonRpcFetchFunc
+): Web3Provider {
   return new Web3Provider(provider);
 }
 // 生成 NFT 的元数据 URI
