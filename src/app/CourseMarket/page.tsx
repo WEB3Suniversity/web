@@ -353,8 +353,8 @@ export default function CourseMarketPage() {
       </div>
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-8 rounded-lg max-w-md w-full shadow-lg">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+          <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
+            <h2 className="text-lg font-bold mb-4">
               Add New Course (Owner Only)
             </h2>
             <div className="mb-6 flex flex-col space-y-4">
@@ -364,7 +364,7 @@ export default function CourseMarketPage() {
                 placeholder="Web2课程ID"
                 value={newWeb2Id}
                 onChange={(e) => setNewWeb2Id(e.target.value)}
-                className="px-4 py-2 border-2 border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+                className="border border-gray-600 p-2 w-full rounded bg-gray-900 text-white"
               />
 
               {/* 课程名称 输入框 */}
@@ -373,7 +373,7 @@ export default function CourseMarketPage() {
                 placeholder="课程名称"
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
-                className="px-4 py-2 border-2 border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+                className="border border-gray-600 p-2 w-full rounded bg-gray-900 text-white"
               />
 
               {/* 课程价格 输入框 */}
@@ -382,20 +382,20 @@ export default function CourseMarketPage() {
                 placeholder="课程价格（YD代币数量）"
                 value={newPrice}
                 onChange={(e) => setNewPrice(e.target.value)}
-                className="px-4 py-2 border-2 border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+                className="border border-gray-600 p-2 w-full rounded bg-gray-900 text-white"
               />
             </div>
 
             <div className="flex justify-end space-x-4">
               <button
                 onClick={() => setShowModal(false)}
-                className="px-6 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition duration-200"
+                className="bg-gray-600 text-white px-4 py-2 rounded"
               >
                 取消
               </button>
               <button
                 onClick={handleAddCourse}
-                className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-500 transition duration-200"
+                className="bg-blue-500 text-white px-4 py-2 rounded"
               >
                 添加课程
               </button>
