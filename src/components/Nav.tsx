@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { hooks, metaMask } from "@/connections/metaMask";
 import MetaMaskCard from "@/components/connectorCards/MetaMaskCard";
 import ExchangeModal from "@/components/CourseMarketPage";
+import Avatar from "./Jazzicon";
 
 // Hooks
 const { useAccounts, useIsActive, useIsActivating } = hooks;
@@ -80,36 +81,31 @@ const NavBar = () => {
         <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-blue-400 rounded"></div>
         <span className="font-semibold text-lg">MetaMask Wallet</span>
       </div>
-      {isActive && (
-        <div className="hidden md:flex space-x-8 text-gray-200">
-          <a
-            href="/CourseMarket"
-            className="hover:text-white transition-colors"
-          >
-            课程
-          </a>
-          <a href="#" className="hover:text-white transition-colors">
-            博客
-          </a>
-          <a href="/user" className="hover:text-white transition-colors">
-            我的
-          </a>
-        </div>
-      )}
-      {isActive && (
-        <button
+      <div className="hidden md:flex space-x-8 text-gray-200">
+        <a href="/CourseMarket" className="hover:text-white transition-colors">
+          课程
+        </a>
+        <a href="#" className="hover:text-white transition-colors">
+          博客
+        </a>
+        <a href="/user" className="hover:text-white transition-colors">
+          我的
+        </a>
+        <a
           onClick={openModal}
-          className="px-4 py-2 bg-yellow-600 rounded hover:bg-yellow-500"
+          className="hover:text-white transition-colors cursor-pointer"
         >
-          兑换webai
-        </button>
-      )}
+          兑换WEBAI
+        </a>
+      </div>
+
       <div className="flex items-center space-x-4">
         {isActive && storedAccount ? (
           <div
             className="flex items-center space-x-2 cursor-pointer"
             onClick={() => toggleModal("logout")}
           >
+            <Avatar address={storedAccount} />
             <span className="block w-2 h-2 bg-green-500 rounded-full"></span>
             <span>
               {storedAccount?.slice(0, 6)}...{storedAccount.slice(-4)}

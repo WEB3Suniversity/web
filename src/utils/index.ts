@@ -83,7 +83,53 @@ export function getName(connector: Connector) {
 export function getLibrary(provider: any): Web3Provider {
   return new Web3Provider(provider);
 }
+// 生成 NFT 的元数据 URI
+export const generateNftMetadata = (
+  courseName: string,
+  account: string,
+  courceId: string
+): string => {
+  const today = new Date();
+  const formattedDate = today.toISOString().split("T")[0];
+  // 这里你可以生成一个图像 URI，或使用课程名称来生成一个唯一的图像/元数据
+  // 示例：生成一个包含课程名称的图像 bafybeidd67orffzq3e5cfey27yoccqre54groadtaxarcitiyj3ldjzrdi
+  const nftImage = `bafybeidd67orffzq3e5cfey27yoccqre54groadtaxarcitiyj3ldjzrdi`;
+  const nftMetadata = {
+    name: `${courseName} NFT`,
+    description: `这是购买课程 ${courseName} 后获得的 NFT`,
+    image: nftImage,
+    attributes: [
+      {
+        trait_type: "Course Name",
+        value: courseName,
+      },
+      {
+        trait_type: "课程ID",
+        value: courceId,
+      },
+      {
+        trait_type: "学员地址",
+        value: account,
+      },
+      {
+        trait_type: "购买时间",
+        value: formattedDate,
+      },
+    ],
+  };
+
+  // 将元数据转换为 JSON 字符串并返回
+  return `data:application/json;base64,${Buffer.from(
+    JSON.stringify(
+      nftMetadata,
+      (key, value) => (typeof value === "bigint" ? value.toString() : value) // 处理 BigInt 转字符串
+    )
+  ).toString("base64")}`;
+};
 
 export const CONTRACT_ADDRESS = "0xC926e252e31Ea9450230decd200F6538133DA0a0";
 
 export const YD_TOKEN_ADDRESS = "0x4Ee7e7E6104451c65ecFe94B6878e1025B02ccA8";
+
+export const NFT_CONTRACT_ADDRESS =
+  "0x0245da269fB6688068c0Be3A4EC0377cf5328dB6";

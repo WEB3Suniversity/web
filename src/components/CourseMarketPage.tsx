@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { hooks, metaMaskStore } from "@/connections/metaMask";
-import ConnectPage from "./connectPage";
 import { CONTRACT_ADDRESS, YD_TOKEN_ADDRESS } from "@/utils";
 import { CONTRACT_ABI } from "@/utils/CONTRACT_ABI";
 import { YD_TOKEN_ABI } from "@/utils/YiDengToKen_ABI";
@@ -21,7 +20,6 @@ const ExchangeModal: React.FC<ExchangeModalProps> = ({ onClose }) => {
   const [signer, setSigner] = useState<ethers.JsonRpcSigner | null>(null);
   const [account, setAccount] = useState<string | null>(null);
 
-  const isActive = useIsActive();
   const [ydTokenContract, setYdTokenContract] =
     useState<ethers.Contract | null>(null);
 
@@ -74,9 +72,8 @@ const ExchangeModal: React.FC<ExchangeModalProps> = ({ onClose }) => {
       alert("兑换失败: " + error.message);
     }
   };
-  console.log(isActive, "ExchangeModal-ExchangeModal");
 
-  return isActive ? (
+  return (
     <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-gray-900 p-6 rounded shadow-lg text-white w-96">
         <h2 className="text-2xl font-bold mb-4">WebAI 与 SETH 兑换</h2>
@@ -108,8 +105,6 @@ const ExchangeModal: React.FC<ExchangeModalProps> = ({ onClose }) => {
         </div>
       </div>
     </div>
-  ) : (
-    <ConnectPage />
   );
 };
 

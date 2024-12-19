@@ -6,9 +6,11 @@ const { useAccounts } = hooks;
 const CourseCard = ({
   course,
   isPurchased,
+  handleApproveAndPurchaseUnified,
 }: {
   course: any;
   isPurchased: boolean;
+  handleApproveAndPurchaseUnified?: (key: string) => void;
 }) => {
   const accounts = useAccounts(); // 获取当前钱包地址
   const currentAccount = accounts?.[0]; // 获取第一个钱包地址
@@ -22,43 +24,43 @@ const CourseCard = ({
     const cart = document.getElementById("shopping-cart");
     if (cart) setIsCartReady(true);
   }, []);
-  const handleBuy = (event: React.MouseEvent) => {
-    if (!isCartReady) return;
+  // const handleBuy = (event: React.MouseEvent) => {
+  //   if (!isCartReady) return;
 
-    const buttonRect = event.currentTarget.getBoundingClientRect();
-    const cartRect = document
-      .getElementById("shopping-cart")
-      ?.getBoundingClientRect();
+  //   const buttonRect = event.currentTarget.getBoundingClientRect();
+  //   const cartRect = document
+  //     .getElementById("shopping-cart")
+  //     ?.getBoundingClientRect();
 
-    if (cartRect) {
-      const startX = buttonRect.left + buttonRect.width / 2;
-      const startY = buttonRect.top;
-      const endX = cartRect.left - cartRect.width / 2;
-      const endY = cartRect.top - cartRect.height / 2;
-      setFlyIconStyle({
-        left: startX,
-        top: startY,
-        // transform: "translate(0, 0)",
-        opacity: 1,
-      });
+  //   if (cartRect) {
+  //     const startX = buttonRect.left + buttonRect.width / 2;
+  //     const startY = buttonRect.top;
+  //     const endX = cartRect.left - cartRect.width / 2;
+  //     const endY = cartRect.top - cartRect.height / 2;
+  //     setFlyIconStyle({
+  //       left: startX,
+  //       top: startY,
+  //       // transform: "translate(0, 0)",
+  //       opacity: 1,
+  //     });
 
-      setIsAnimating(true);
+  //     setIsAnimating(true);
 
-      setTimeout(() => {
-        setFlyIconStyle({
-          left: endX,
-          top: endY,
-          //   transform: "translate(0, 0) scale(0.5)",
-          opacity: 0,
-        });
-      }, 0);
+  //     setTimeout(() => {
+  //       setFlyIconStyle({
+  //         left: endX,
+  //         top: endY,
+  //         //   transform: "translate(0, 0) scale(0.5)",
+  //         opacity: 0,
+  //       });
+  //     }, 0);
 
-      setTimeout(() => {
-        setIsAnimating(false);
-        setCartCount((prevCount) => prevCount + 1);
-      }, 10000);
-    }
-  };
+  //     setTimeout(() => {
+  //       setIsAnimating(false);
+  //       setCartCount((prevCount) => prevCount + 1);
+  //     }, 10000);
+  //   }
+  // };
   const isOwner =
     course.creator.toLowerCase() === currentAccount?.toLowerCase();
 
@@ -68,16 +70,13 @@ const CourseCard = ({
       className="bg-gray-800 text-white rounded-lg shadow-md overflow-hidden"
     >
       {/* 图片区域 */}
-      <div
-        className="bg-gray-300 h-48 flex items-center justify-center text-gray-500 text-3xl"
-        style={{
-          backgroundImage: `url('https://picsum.photos/400/300?random=${Math.random()}')`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
-        {/* 如果图片未加载，显示文字 */}
-        {<span>{course.name}</span>}
+      <div className="bg-gray-300 h-48 flex items-center justify-center text-gray-500 text-3xl overflow-hidden">
+        <div
+          className="w-full h-full bg-cover bg-center transform transition-transform duration-500 hover:scale-110"
+          style={{
+            backgroundImage: `url('https://picsum.photos/400/300?random=${Math.random()}')`,
+          }}
+        ></div>
       </div>
 
       {/* 文字描述区域 */}
@@ -103,7 +102,9 @@ const CourseCard = ({
             </span>
           ) : (
             <button
-              onClick={handleBuy}
+              onClick={() =>
+                handleApproveAndPurchaseUnified?.(course.web2CourseId)
+              }
               disabled={isPurchased}
               className={`w-full font-bold py-2 px-4 rounded ${
                 isPurchased

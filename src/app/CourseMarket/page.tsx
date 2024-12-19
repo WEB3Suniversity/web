@@ -7,9 +7,14 @@ import { CONTRACT_ABI } from "@/utils/CONTRACT_ABI";
 // 请替换为您的YD代币地址和ABI
 import { YD_TOKEN_ABI } from "@/utils/YiDengToKen_ABI";
 import { hooks, metaMaskStore } from "@/connections/metaMask";
-import ConnectPage from "@/components/connectPage";
-import { CONTRACT_ADDRESS, YD_TOKEN_ADDRESS } from "@/utils";
+import {
+  CONTRACT_ADDRESS,
+  generateNftMetadata,
+  NFT_CONTRACT_ADDRESS,
+  YD_TOKEN_ADDRESS,
+} from "@/utils";
 import CourseCard from "./CourceCard";
+import { NFT_ABI } from "@/utils/NFT_ABI";
 
 interface Course {
   web2CourseId: string;
@@ -27,7 +32,7 @@ export default function CourseMarketPage() {
   const [courseContract, setContract] = useState<ethers.Contract | null>(null);
   const [ydTokenContract, setYdTokenContract] =
     useState<ethers.Contract | null>(null);
-
+  const [nftContract, setNftContract] = useState<ethers.Contract | null>(null);
   const [account, setAccount] = useState<string | null>(null);
   const [courseCount, setCourseCount] = useState<number>(0);
   const [courses, setCourses] = useState<Course[]>([]);
@@ -37,11 +42,12 @@ export default function CourseMarketPage() {
   const [newName, setNewName] = useState("");
   const [newPrice, setNewPrice] = useState("");
   const [isOwner, setIsOwner] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
-  const [purchaseId, setPurchaseId] = useState<string>("");
   const [message, setMessage] = useState<string>("");
   const isActive = useIsActive();
   console.log("MetaMask Store State:", metaMaskStore.getState(), isActive);
+  console.log(account, ";account-account");
 
   useEffect(() => {
     if (typeof window.ethereum !== "undefined") {
@@ -72,6 +78,11 @@ export default function CourseMarketPage() {
           YD_TOKEN_ABI,
           signer
         );
+        const nftInstance = new ethers.Contract(
+          NFT_CONTRACT_ADDRESS,
+          NFT_ABI,
+          signer
+        );
 
         console.log("Course Contract Address:", contractInstance.target);
         console.log("YD Token Contract Address:", tokenInstance.target);
@@ -81,6 +92,7 @@ export default function CourseMarketPage() {
         setAccount(accountAddress);
         setContract(contractInstance);
         setYdTokenContract(tokenInstance);
+        setNftContract(nftInstance);
         // 检查是否是合约所有者
         const contractOwner = await contractInstance.owner();
         setIsOwner(
@@ -98,15 +110,36 @@ export default function CourseMarketPage() {
 
     init();
   }, []);
+  const loadCourses = async () => {
+    if (courseContract && courseCount > 0 && courses.length === 0) {
+      // 避免重复加载
+      const loadedCourses: Course[] = [];
+      for (let i = 1; i <= courseCount; i++) {
+        const c = await courseContract.courses(i);
+        loadedCourses.push({
+          web2CourseId: c.web2CourseId,
+          name: c.name,
+          price: c.price.toString(),
+          isActive: c.isActive,
+          creator: c.creator,
+        });
+      }
+      setCourses(loadedCourses);
+    }
+  };
+  const loadPurchasedCourses = async () => {
+    if (!courseContract || !account) return;
 
-  useEffect(() => {
-    const loadCourses = async () => {
-      if (courseContract && courseCount > 0 && courses.length === 0) {
-        // 避免重复加载
-        const loadedCourses: Course[] = [];
-        for (let i = 1; i <= courseCount; i++) {
-          const c = await courseContract.courses(i);
-          loadedCourses.push({
+    try {
+      const loadedPurchasedCourses: Course[] = [];
+      for (let i = 1; i <= courseCount; i++) {
+        const c = await courseContract.courses(i);
+        const hasPurchased = await courseContract.hasCourse(
+          account,
+          c.web2CourseId
+        );
+        if (hasPurchased) {
+          loadedPurchasedCourses.push({
             web2CourseId: c.web2CourseId,
             name: c.name,
             price: c.price.toString(),
@@ -114,42 +147,20 @@ export default function CourseMarketPage() {
             creator: c.creator,
           });
         }
-        setCourses(loadedCourses);
       }
-    };
-    loadCourses();
-  }, [courseContract, courseCount]); // 保持依赖项不变
-
+      setPurchasedCourses(loadedPurchasedCourses);
+    } catch (error) {
+      console.error("加载已购买课程失败：", error);
+    }
+  };
   useEffect(() => {
-    const loadPurchasedCourses = async () => {
-      if (!courseContract || !account) return;
-
-      try {
-        const loadedPurchasedCourses: Course[] = [];
-        for (let i = 1; i <= courseCount; i++) {
-          const c = await courseContract.courses(i);
-          const hasPurchased = await courseContract.hasCourse(
-            account,
-            c.web2CourseId
-          );
-          if (hasPurchased) {
-            loadedPurchasedCourses.push({
-              web2CourseId: c.web2CourseId,
-              name: c.name,
-              price: c.price.toString(),
-              isActive: c.isActive,
-              creator: c.creator,
-            });
-          }
-        }
-        setPurchasedCourses(loadedPurchasedCourses);
-      } catch (error) {
-        console.error("加载已购买课程失败：", error);
-      }
-    };
-
     loadPurchasedCourses();
+    loadCourses();
   }, [courseContract, account, courseCount]);
+  useEffect(() => {
+    loadCourses();
+    loadPurchasedCourses();
+  }, [message]);
 
   const handleAddCourse = async () => {
     if (!courseContract) return;
@@ -166,38 +177,25 @@ export default function CourseMarketPage() {
         newPrice
         // ethers.parseUnits(newPrice, 18) // 价格单位
       );
+      // 同时给当前用户添加nft
       await tx.wait();
+      setShowModal(false);
       setMessage("课程添加成功！");
     } catch (error: any) {
       setMessage("添加课程失败：" + (error.reason || error.message));
-    }
-  };
-  const handleApprove = async () => {
-    if (!ydTokenContract) {
-      setMessage("YD代币合约未初始化");
-      return;
-    }
-
-    try {
-      const approveAmount = ethers.parseUnits("10", 18); // 授权 1000 YD
-      setMessage("正在授权 YD 代币支出，请稍候...");
-      const tx = await ydTokenContract.approve(CONTRACT_ADDRESS, approveAmount);
-      await tx.wait();
-      setMessage("授权成功！您现在可以购买课程了。");
-    } catch (error: any) {
-      setMessage("授权失败：" + (error.reason || error.message));
     }
   };
 
   const handleApproveAndPurchaseUnified = async (
     web2CourseId: string
   ): Promise<void> => {
-    if (!courseContract || !ydTokenContract || !account) {
+    if (!courseContract || !ydTokenContract || !account || !nftContract) {
       setMessage("合约或账户未初始化，请确保已连接钱包");
       console.error("CourseContract or YDTokenContract is null:", {
         courseContract,
         ydTokenContract,
         account,
+        nftContract,
       });
       return;
     }
@@ -253,13 +251,33 @@ export default function CourseMarketPage() {
       const tx = await courseContract.purchaseCourse(web2CourseId);
       await tx.wait();
       setMessage(`课程 ${course.name} 购买成功！`);
+      // 更新课程
+      loadCourses();
+      loadPurchasedCourses();
+      // 在购买课程后铸造 NFT
+      setMessage("正在铸造 NFT...");
+      const nftMetadataUri = generateNftMetadata(
+        course.name,
+        account,
+        courseId
+      ); // 生成 NFT 的元数据 URI
+      console.log(account, courseId, "account-courseId-nftMetadataUri");
+      // "https://pub-68eccf4a0d06407daa4a4c00c17dbeff.r2.dev/rp-doge.json"
+
+      const mintTx = await nftContract?.mintFor(
+        courseId,
+        account,
+        nftMetadataUri
+      );
+      await mintTx.wait();
+      setMessage(`NFT 成功铸造，已添加到您的账户！`);
     } catch (err: any) {
       console.error("操作失败:", err);
       setMessage(err.reason || err.message || "操作失败");
     }
   };
 
-  return isActive ? (
+  return (
     <div className="min-h-screen bg-gray-900 text-white p-8">
       <div className="container mx-auto">
         <h1 className="text-3xl font-bold mb-6">Course Marketplace</h1>
@@ -273,7 +291,17 @@ export default function CourseMarketPage() {
           </div>
         )}
 
-        <h2 className="text-2xl font-semibold mb-4">All Courses</h2>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-semibold text-gray-800 text-white">
+            All Courses
+          </h2>
+          <button
+            onClick={() => setShowModal(true)}
+            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition duration-300"
+          >
+            添加课程
+          </button>
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {courses.map((course, index) => (
             <CourseCard
@@ -282,11 +310,11 @@ export default function CourseMarketPage() {
               isPurchased={purchasedCourses.some(
                 (p) => p.web2CourseId === course.web2CourseId
               )}
+              handleApproveAndPurchaseUnified={handleApproveAndPurchaseUnified}
             />
           ))}
         </div>
-
-        <h2 className="text-2xl font-semibold mb-4">已购买课程</h2>
+        <h2 className="text-2xl font-semibold mb-4">Purchased Course</h2>
         <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {purchasedCourses.length > 0 ? (
             purchasedCourses.map((course, index) => (
@@ -296,60 +324,62 @@ export default function CourseMarketPage() {
               <CourseCard course={course} key={index} isPurchased={true} />
             ))
           ) : (
-            <p>您还没有购买任何课程。</p>
+            <p>ou have not purchased any courses yet.</p>
           )}
         </ul>
-
-        <h2 className="text-2xl font-semibold mt-8 mb-4">购买课程</h2>
-        <input
-          placeholder="输入Web2课程ID"
-          value={purchaseId}
-          onChange={(e) => setPurchaseId(e.target.value)}
-          className="px-4 py-2 text-black rounded mr-2"
-        />
-        <button
-          onClick={() => handleApproveAndPurchaseUnified(purchaseId)} // ✅ 传入正确参数
-          className="px-4 py-2 bg-blue-600 rounded hover:bg-blue-500"
-        >
-          购买
-        </button>
       </div>
-      {isOwner && (
-        <>
-          <h2 className="text-2xl font-semibold mb-4">添加新课程（仅Owner）</h2>
-          <div className="mb-4 flex flex-col space-y-2 max-w-sm">
-            <input
-              type="text"
-              placeholder="Web2课程ID"
-              value={newWeb2Id}
-              onChange={(e) => setNewWeb2Id(e.target.value)}
-              className="px-4 py-2 rounded text-black"
-            />
-            <input
-              type="text"
-              placeholder="课程名称"
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-              className="px-4 py-2 rounded text-black"
-            />
-            <input
-              type="text"
-              placeholder="课程价格（YD代币数量）"
-              value={newPrice}
-              onChange={(e) => setNewPrice(e.target.value)}
-              className="px-4 py-2 rounded text-black"
-            />
-            <button
-              onClick={handleAddCourse}
-              className="px-4 py-2 bg-green-600 rounded hover:bg-green-500"
-            >
-              添加课程
-            </button>
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-8 rounded-lg max-w-md w-full shadow-lg">
+            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+              Add New Course (Owner Only)
+            </h2>
+            <div className="mb-6 flex flex-col space-y-4">
+              {/* 课程ID 输入框 */}
+              <input
+                type="text"
+                placeholder="Web2课程ID"
+                value={newWeb2Id}
+                onChange={(e) => setNewWeb2Id(e.target.value)}
+                className="px-4 py-2 border-2 border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+              />
+
+              {/* 课程名称 输入框 */}
+              <input
+                type="text"
+                placeholder="课程名称"
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+                className="px-4 py-2 border-2 border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+              />
+
+              {/* 课程价格 输入框 */}
+              <input
+                type="text"
+                placeholder="课程价格（YD代币数量）"
+                value={newPrice}
+                onChange={(e) => setNewPrice(e.target.value)}
+                className="px-4 py-2 border-2 border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+              />
+            </div>
+
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={() => setShowModal(false)}
+                className="px-6 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition duration-200"
+              >
+                取消
+              </button>
+              <button
+                onClick={handleAddCourse}
+                className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-500 transition duration-200"
+              >
+                添加课程
+              </button>
+            </div>
           </div>
-        </>
+        </div>
       )}
     </div>
-  ) : (
-    <ConnectPage />
   );
 }
