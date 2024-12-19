@@ -135,7 +135,7 @@ export const generateNftMetadata = (
 };
 
 export const getEthereumProvider = () => {
-  if (typeof window !== "undefined" && window.ethereum) {
+  if (typeof window !== "undefined") {
     return new ethers.BrowserProvider(
       window.ethereum as unknown as ethers.Eip1193Provider
     );

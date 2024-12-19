@@ -7,7 +7,10 @@ import Image from "next/image";
 
 import { NFT_ABI } from "@/utils/NFT_ABI";
 import { getEthereumProvider, isClient, NFT_CONTRACT_ADDRESS } from "@/utils";
-import Avatar from "@/components/Jazzicon";
+import dynamic from "next/dynamic";
+
+const Avatar = dynamic(() => import("@/components/Jazzicon"), { ssr: false });
+
 interface CustomDeferredTopicFilter {
   address?: string;
   fromBlock?: number;

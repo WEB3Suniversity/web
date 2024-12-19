@@ -26,15 +26,8 @@ const ExchangeModal: React.FC<ExchangeModalProps> = ({ onClose }) => {
   useEffect(() => {
     const init = async () => {
       if (isClient()) {
-        if (!window.ethereum) {
-          console.error("MetaMask 未安装");
-          return;
-        }
         const ethProvider = getEthereumProvider();
         if (!ethProvider) return;
-        // const ethProvider = new ethers.BrowserProvider(
-        //   window.ethereum as unknown as ethers.Eip1193Provider
-        // );
         const signer = await ethProvider.getSigner();
         const accountAddress = await signer.getAddress();
         const tokenInstance = new ethers.Contract(

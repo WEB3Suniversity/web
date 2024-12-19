@@ -46,6 +46,10 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 ### 生成Prisma客户端
 
 ```bash
+npx prisma init
+
+npx prisma db push
+
 npx prisma generate
 ```
 
@@ -111,14 +115,20 @@ mongosh "mongodb://root:example@localhost:27017"
 
 docker exec -it mongodb mongosh "mongodb://root:example@localhost:27017"
 
-
-on=true&serverSelectionTimeo ANDROID_HOME=/Users/lijinhai/Library/Android/sdk AUTOJUMP_ERROR_PATH=/Users/lijinhai/Library/autojump/errors.log
 ❯ docker ps
-
-CONTAINER ID   IMAGE          COMMAND                   CREATED          STATUS          PORTS                      NAMES
-9b5f1bd89a23   mongo:latest   "docker-entrypoint.s…"   35 minutes ago   Up 35 minutes   0.0.0.0:27017->27017/tcp   mongodb
 ❯ brew services stop mongodb-community
-❯ lsof -iTCP -sTCP:LISTEN | grep 27017
-─────────────────────────────────────────────── base   at 01:02:28 下午  ─╮
-❯                                                                                                                                                ─╯
+
+
+
+```
+
+### XHR 语句
+
+```bash
+curl -X GET http://localhost:3000/api/articles         
+
+curl -X POST http://localhost:3000/api/articles \
+  -H "Content-Type: application/json" \
+  -d '{"author_address": "0x123456789abcdef", "title": "New Article", "content_hash": "hash123"}'
+
 ```

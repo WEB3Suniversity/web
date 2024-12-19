@@ -4,7 +4,9 @@ import React, { useEffect, useState } from "react";
 import { hooks, metaMask } from "@/connections/metaMask";
 import MetaMaskCard from "@/components/connectorCards/MetaMaskCard";
 import ExchangeModal from "@/components/CourseMarketPage";
-import Avatar from "./Jazzicon";
+import dynamic from "next/dynamic";
+
+const Avatar = dynamic(() => import("@/components/Jazzicon"), { ssr: false });
 
 // Hooks
 const { useAccounts, useIsActive, useIsActivating } = hooks;
@@ -85,8 +87,8 @@ const NavBar = () => {
         <a href="/CourseMarket" className="hover:text-white transition-colors">
           课程
         </a>
-        <a href="#" className="hover:text-white transition-colors">
-          博客
+        <a href="/articles" className="hover:text-white transition-colors">
+          文章
         </a>
         <a href="/user" className="hover:text-white transition-colors">
           我的
