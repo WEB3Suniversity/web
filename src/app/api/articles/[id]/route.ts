@@ -31,7 +31,7 @@ export async function GET(req: Request, { params }: Props) {
 export async function DELETE(req: NextRequest, { params }: Props) {
   try {
     // Extract the `id` from params
-    const { id } = params;
+    const { id } = await params;
     console.log(id, "id");
 
     if (!id) {
@@ -72,7 +72,7 @@ export async function DELETE(req: NextRequest, { params }: Props) {
 export async function PUT(req: NextRequest, { params }: Props) {
   try {
     // Extract the ID from params
-    const { id } = params;
+    const { id } = await params;
 
     if (!id) {
       return NextResponse.json(

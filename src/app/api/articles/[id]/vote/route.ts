@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToDb } from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
-
-export async function POST(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+type Props = {
+  params: Promise<{
+    id: string;
+  }>;
+};
+export async function POST(req: NextRequest, { params }: Props) {
   try {
-    const { id } = params; // Get the article ID
+    const { id } = await params; // Get the article ID
     const { type } = await req.json(); // Get the vote type (for/against)
 
     if (!id || !type) {
