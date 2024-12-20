@@ -4,9 +4,11 @@ let client: MongoClient;
 let db: Db;
 
 const uri = process.env.DATABASE_URL || ""; // Load the DATABASE_URL from .env
-
+console.log("MONGO_URI:", process.env.MONGO_URI, uri, "uri-uri");
 if (!uri) {
-  throw new Error("Please define the DATABASE_URL environment variable inside .env");
+  throw new Error(
+    "Please define the DATABASE_URL environment variable inside .env"
+  );
 }
 
 export async function connectToDb(): Promise<Db> {

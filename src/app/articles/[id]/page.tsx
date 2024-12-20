@@ -98,7 +98,7 @@ export default function ArticleDetailsPage() {
   }
 
   return (
-    <div className="p-6 max-w-4xl mx-auto text-gray-200">
+    <div className="min-h-screen bg-gray-900 text-white p-8 text-center">
       <h1 className="text-2xl font-bold mb-6">{article.title || "Untitled"}</h1>
       <p>
         <strong>Author:</strong> {article.author_address || "Unknown"}
@@ -121,7 +121,7 @@ export default function ArticleDetailsPage() {
       <p>
         <strong>Reward Amount:</strong> {article.reward_amount || 0}
       </p>
-      <p className="flex items-center">
+      <p className="flex items-center justify-center">
         <strong>Status:</strong>
         <span
           className={`ml-2 h-3 w-3 rounded-full ${
@@ -138,7 +138,7 @@ export default function ArticleDetailsPage() {
       </p>
 
       {/* Voting Buttons */}
-      <div className="flex space-x-4 mt-6">
+      <div className="flex space-x-4 mt-6 justify-center">
         <button
           onClick={handleVoteFor}
           className="bg-green-500 text-white px-4 py-2 rounded"
@@ -151,14 +151,13 @@ export default function ArticleDetailsPage() {
         >
           Vote Against
         </button>
+        <button
+          onClick={() => router.push("/articles")}
+          className="bg-gray-600 text-white px-4 py-2 rounded"
+        >
+          Back
+        </button>
       </div>
-
-      <button
-        onClick={() => router.push("/articles")}
-        className="mt-6 bg-gray-600 text-white px-4 py-2 rounded"
-      >
-        Back
-      </button>
     </div>
   );
 }

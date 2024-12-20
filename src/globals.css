@@ -1,0 +1,31 @@
+/* globals.css */
+
+:root {
+  --background-color: #1a202c; /* 深色主题背景 */
+  --foreground-color: #edf2f7; /* 深色主题前景色 */
+  --accent-color: #63b3ed; /* 深色主题高亮色 */
+}
+
+[data-theme="light"] {
+  --background-color: #edf2f7; /* 浅色主题背景 */
+  --foreground-color: #2d3748; /* 浅色主题前景色 */
+  --accent-color: #3182ce; /* 浅色主题高亮色 */
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--foreground-color);
+}
+
+/* 在 Tailwind 中使用这些变量 */
+.bg-background {
+  background-color: var(--background-color);
+}
+
+.text-foreground {
+  color: var(--foreground-color);
+}
+
+.bg-accent {
+  background-color: var(--accent-color);
+}
