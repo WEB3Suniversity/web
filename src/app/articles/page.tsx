@@ -14,7 +14,7 @@ type Article = {
   votes_for?: string;
   votes_against?: string;
   reward_amount?: string;
-  status?:string
+  status?: string;
 };
 
 export default function ArticlesPage() {
@@ -98,7 +98,7 @@ export default function ArticlesPage() {
   };
 
   return (
-    <div className="p-6 max-w-4xl mx-auto text-gray-200">
+    <div className="min-h-screen bg-gray-900 text-white p-8">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold mb-6">Articles</h1>
         <button

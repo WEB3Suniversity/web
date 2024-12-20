@@ -10,6 +10,9 @@ type Props = {
 export async function GET(req: Request, { params }: Props) {
   try {
     const { id } = await params;
+    if (!id) {
+      return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+    }
     const db = await connectToDb();
     const article = await db
       .collection("articles")
@@ -32,6 +35,9 @@ export async function DELETE(req: NextRequest, { params }: Props) {
   try {
     // Extract the `id` from params
     const { id } = await params;
+    if (!id) {
+      return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+    }
     console.log(id, "id");
 
     if (!id) {

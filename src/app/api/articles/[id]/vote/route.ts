@@ -9,7 +9,13 @@ type Props = {
 export async function POST(req: NextRequest, { params }: Props) {
   try {
     const { id } = await params; // Get the article ID
+    if (!id) {
+      return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+    }
     const { type } = await req.json(); // Get the vote type (for/against)
+    if (!type) {
+      return NextResponse.json({ error: "Invalid type" }, { status: 400 });
+    }
 
     if (!id || !type) {
       return NextResponse.json(
