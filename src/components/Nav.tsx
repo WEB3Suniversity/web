@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import { hooks, metaMask } from "@/connections/metaMask";
 import MetaMaskCard from "@/components/connectorCards/MetaMaskCard";
 import ExchangeModal from "@/components/CourseMarketPage";
@@ -84,21 +85,24 @@ const NavBar = () => {
         <span className="font-semibold text-lg">MetaMask Wallet</span>
       </div>
       <div className="hidden md:flex space-x-8 text-gray-200">
-        <a href="/CourseMarket" className="hover:text-white transition-colors">
+        <Link
+          href="/CourseMarket"
+          className="hover:text-white transition-colors"
+        >
           课程
-        </a>
-        <a href="/articles" className="hover:text-white transition-colors">
+        </Link>
+        <Link href="/articles" className="hover:text-white transition-colors">
           文章
-        </a>
-        <a href="/user" className="hover:text-white transition-colors">
+        </Link>
+        <Link href="/user" className="hover:text-white transition-colors">
           我的
-        </a>
-        <a
+        </Link>
+        <Link
           onClick={openModal}
           className="hover:text-white transition-colors cursor-pointer"
         >
           兑换WEBAI
-        </a>
+        </Link>
       </div>
 
       <div className="flex items-center space-x-4">
