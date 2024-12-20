@@ -2,10 +2,33 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectToDb } from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
-export async function DELETE(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+type Props = {
+  params: Promise<{
+    id: string;
+  }>;
+};
+export async function GET(req: Request, { params }: Props) {
+  try {
+    const { id } = await params;
+    const db = await connectToDb();
+    const article = await db
+      .collection("articles")
+      .findOne({ _id: new ObjectId(id) });
+
+    if (!article) {
+      return NextResponse.json({ error: "Article not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(article);
+  } catch (error) {
+    console.error("Error fetching article:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch article" },
+      { status: 500 }
+    );
+  }
+}
+export async function DELETE(req: NextRequest, { params }: Props) {
   try {
     // Extract the `id` from params
     const { id } = params;
@@ -46,10 +69,7 @@ export async function DELETE(
     );
   }
 }
-export async function PUT(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(req: NextRequest, { params }: Props) {
   try {
     // Extract the ID from params
     const { id } = params;
