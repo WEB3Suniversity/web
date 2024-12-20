@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
 type Article = {
@@ -12,6 +13,7 @@ type Article = {
 };
 
 export default function ArticlesPage() {
+  const router = useRouter();
   const [articles, setArticles] = useState<Article[]>([]);
   const [currentArticle, setCurrentArticle] = useState<Article | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -86,24 +88,28 @@ export default function ArticlesPage() {
       setError("Failed to delete article");
     }
   };
+  const handleViewDetails = (id: string) => {
+    router.push(`/articles/${id}`); // Navigate to the details page
+  };
 
   return (
     <div className="p-6 max-w-4xl mx-auto text-gray-200">
-      <h1 className="text-2xl font-bold mb-6">Articles</h1>
-
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-2xl font-bold mb-6">Articles</h1>
+        <button
+          onClick={() => openModal()}
+          className="bg-blue-500 text-white px-4 py-2 rounded mb-4"
+        >
+          Create New Article
+        </button>
+      </div>
       {error && <div className="text-red-500 mb-4">{error}</div>}
-
-      <button
-        onClick={() => openModal()}
-        className="bg-blue-500 text-white px-4 py-2 rounded mb-4"
-      >
-        Create New Article
-      </button>
 
       <ul className="space-y-4">
         {articles.length > 0 ? (
           articles.map((article) => (
             <li
+              onClick={() => handleViewDetails(article._id!)}
               key={article?._id}
               className="border border-gray-700 p-4 rounded flex justify-between items-center cursor-pointer"
             >
@@ -111,6 +117,25 @@ export default function ArticlesPage() {
                 <h3 className="font-bold">{article?.title}</h3>
                 <p>Author: {article?.author_address}</p>
                 <p>Content Hash: {article?.content_hash}</p>
+                <p>Submission Time: {article?.submission_time || "N/A"}</p>
+                <p>Votes For: {article?.votes_for || 0}</p>
+                <p>Votes Against: {article?.votes_against || 0}</p>
+                <p>Reward Amount: {article?.reward_amount || 0}</p>
+                <p className="flex items-center">
+                  Status:
+                  <span
+                    className={`ml-2 h-3 w-3 rounded-full ${
+                      article?.status === "Pending"
+                        ? "bg-yellow-500"
+                        : article?.status === "Approved"
+                        ? "bg-green-500"
+                        : article?.status === "Rejected"
+                        ? "bg-red-500"
+                        : "bg-gray-500"
+                    }`}
+                  ></span>
+                  <span className="ml-2">{article?.status || "Unknown"}</span>
+                </p>
               </div>
               <div className="flex space-x-2">
                 <button

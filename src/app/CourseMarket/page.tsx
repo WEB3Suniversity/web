@@ -126,7 +126,7 @@ export default function CourseMarketPage() {
     } catch (error) {
       console.error("加载课程失败：", error);
     }
-  }, [courseContract, courseCount, courses.length]);
+  }, [courseContract, courseCount]);
 
   const loadPurchasedCourses = useCallback(async () => {
     if (!courseContract || !account) return;
