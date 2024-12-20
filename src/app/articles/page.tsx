@@ -10,6 +10,11 @@ type Article = {
   title: string;
   content_hash: string;
   created_at?: string;
+  submission_time?: string;
+  votes_for?: string;
+  votes_against?: string;
+  reward_amount?: string;
+  status?:string
 };
 
 export default function ArticlesPage() {
