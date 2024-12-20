@@ -98,10 +98,10 @@ const NavBar = () => {
           我的
         </Link>
         <Link
-          onClick={openModal}
+          href="#"
           className="hover:text-white transition-colors cursor-pointer"
         >
-          兑换WEBAI
+          <span onClick={openModal}>兑换WEBAI</span>
         </Link>
       </div>
 
