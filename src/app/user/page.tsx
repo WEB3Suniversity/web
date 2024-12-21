@@ -48,7 +48,7 @@ export default function UserPage() {
 
   useEffect(() => {
     fetchUserAccount();
-  }, [router]);
+  });
 
   // 获取用户NFT
   const fetchNFTs = async (account: string) => {

@@ -321,7 +321,7 @@ export default function CourseMarketPage() {
               onClick={() => setShowModal(true)}
               className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition duration-300"
             >
-              添加课程
+              Add Course
             </button>
           )}
         </div>
