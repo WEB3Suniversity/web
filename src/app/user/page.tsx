@@ -21,31 +21,46 @@ interface CustomDeferredTopicFilter {
 export default function UserPage() {
   const [userAccount, setUserAccount] = useState<string | null>(null);
   const [nftList, setNftList] = useState<{ id: number; uri: string }[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
   const router = useRouter();
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const account = localStorage.getItem("user_account");
-      if (!account) {
-        router.push("/");
-      } else {
+  // 获取用户账号
+  const fetchUserAccount = async () => {
+    if (!isClient()) return;
+
+    if (window.ethereum) {
+      try {
+        const provider = new ethers.BrowserProvider(window.ethereum as any);
+        const signer = await provider.getSigner();
+        const account = await signer.getAddress();
         setUserAccount(account);
         fetchNFTs(account); // 获取NFT列表
+      } catch (err) {
+        setError("无法连接到钱包");
+        console.error(err);
       }
+    } else {
+      setError("未安装钱包扩展");
     }
+  };
+
+  useEffect(() => {
+    fetchUserAccount();
   }, [router]);
 
+  // 获取用户NFT
   const fetchNFTs = async (account: string) => {
     if (!isClient()) {
       return;
     }
 
+    setLoading(true);
+    setError(null); // 清除之前的错误
+
     try {
       const provider = getEthereumProvider();
-
-      // const provider = new ethers.BrowserProvider(
-      //   window.ethereum as unknown as ethers.Eip1193Provider
-      // );
 
       if (!provider) throw new Error("Provider initialization failed");
 
@@ -71,31 +86,23 @@ export default function UserPage() {
       };
       const logs = await provider.getLogs(transferFilterObj);
 
-      console.log("Logs:", logs);
-
       const nftList: { id: number; uri: string }[] = [];
       const uniqueTokenIds = new Set<number>();
 
       for (const log of logs) {
         const parsedLog = contract.interface.parseLog(log);
 
-        // 检查是否正确解析到 tokenId
         if (!parsedLog?.args?.tokenId) {
           console.warn("TokenId is undefined in log:", log);
           continue;
         }
 
         const tokenId = parsedLog.args.tokenId;
-        console.log(`Processing tokenId: ${tokenId}`);
 
         if (!uniqueTokenIds.has(Number(tokenId))) {
           uniqueTokenIds.add(Number(tokenId));
 
-          // 安全调用 tokenURI
           const tokenURI = await contract.tokenURI(tokenId);
-          console.log(`Token URI for ${tokenId}:`, tokenURI);
-          // const response = await fetch(tokenURI);
-          // console.log(response, "response-response");
 
           if (tokenURI) {
             nftList.push({ id: Number(tokenId), uri: tokenURI });
@@ -105,13 +112,39 @@ export default function UserPage() {
 
       setNftList(nftList);
     } catch (error) {
+      setError("获取NFT失败");
       console.error("Failed to fetch NFTs:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
+  // 如果未连接钱包，显示连接提示
   if (!userAccount) {
     return (
-      <p className="text-white bg-[#0f172a] min-h-screen p-6">正在跳转...</p>
+      <div className="text-white bg-[#0f172a] min-h-screen flex justify-center items-center">
+        <p className="text-white bg-[#0f172a] min-h-screen p-6">
+          正在跳转或连接钱包...
+        </p>
+      </div>
+    );
+  }
+
+  // 如果正在加载，显示加载动画
+  if (loading) {
+    return (
+      <div className="text-white bg-[#0f172a] min-h-screen flex justify-center items-center">
+        <p className="text-white">正在加载您的NFT...</p>
+      </div>
+    );
+  }
+
+  // 如果有错误，显示错误信息
+  if (error) {
+    return (
+      <div className="text-white bg-[#0f172a] min-h-screen flex justify-center items-center">
+        <p className="text-red-500">{error}</p>
+      </div>
     );
   }
 
@@ -148,6 +181,8 @@ export default function UserPage() {
                   src={nft.uri}
                   alt={`NFT ${nft.id}`}
                   className="w-full h-48 object-cover"
+                  layout="fill"
+                  objectFit="cover"
                 />
                 <div className="p-4">
                   <h3 className="text-lg font-bold mb-2 text-white">

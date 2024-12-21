@@ -89,19 +89,19 @@ const NavBar = () => {
           href="/CourseMarket"
           className="hover:text-white transition-colors"
         >
-          课程
+          Courses
         </Link>
         <Link href="/articles" className="hover:text-white transition-colors">
-          文章
+          Articles
         </Link>
         <Link href="/user" className="hover:text-white transition-colors">
-          我的
+          My Profile
         </Link>
         <Link
           href="#"
           className="hover:text-white transition-colors cursor-pointer"
         >
-          <span onClick={openModal}>兑换WEBAI</span>
+          <span onClick={openModal}>Redeem WEBAI</span>
         </Link>
       </div>
 
