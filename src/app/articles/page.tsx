@@ -114,11 +114,16 @@ export default function ArticlesPage() {
         {articles.length > 0 ? (
           articles.map((article) => (
             <li
-              onClick={() => handleViewDetails(article._id!)}
               key={article?._id}
               className="border border-gray-700 p-4 rounded flex justify-between items-center cursor-pointer"
             >
-              <div>
+              <div
+                onClick={(e) => {
+                  if ((e.target as HTMLElement).tagName !== "BUTTON") {
+                    handleViewDetails(article._id!);
+                  }
+                }}
+              >
                 <h3 className="font-bold">{article?.title}</h3>
                 <p>Author: {article?.author_address}</p>
                 <p>Content Hash: {article?.content_hash}</p>
@@ -144,13 +149,19 @@ export default function ArticlesPage() {
               </div>
               <div className="flex space-x-2">
                 <button
-                  onClick={() => openModal(article)}
+                  onClick={(e) => {
+                    e.stopPropagation(); // 阻止冒泡
+                    openModal(article);
+                  }}
                   className="bg-yellow-500 text-white px-4 py-2 rounded"
                 >
                   Edit
                 </button>
                 <button
-                  onClick={() => handleDeleteArticle(article._id!)}
+                  onClick={(e) => {
+                    e.stopPropagation(); // 阻止冒泡
+                    handleDeleteArticle(article._id!);
+                  }}
                   className="bg-red-500 text-white px-4 py-2 rounded"
                 >
                   Delete

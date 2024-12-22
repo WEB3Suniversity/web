@@ -6,7 +6,12 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 import { NFT_ABI } from "@/utils/NFT_ABI";
-import { getEthereumProvider, isClient, NFT_CONTRACT_ADDRESS } from "@/utils";
+import {
+  getEthereumProvider,
+  isClient,
+  NFT_CONTRACT_ADDRESS,
+  parseDataToJson,
+} from "@/utils";
 import dynamic from "next/dynamic";
 
 const Avatar = dynamic(() => import("@/components/Jazzicon"), { ssr: false });
@@ -48,7 +53,7 @@ export default function UserPage() {
 
   useEffect(() => {
     fetchUserAccount();
-  });
+  }, []);
 
   // 获取用户NFT
   const fetchNFTs = async (account: string) => {
@@ -105,6 +110,9 @@ export default function UserPage() {
           const tokenURI = await contract.tokenURI(tokenId);
 
           if (tokenURI) {
+            console.log(tokenURI);
+            const obj = parseDataToJson(tokenURI);
+            console.log(obj, "obj-obj");
             nftList.push({ id: Number(tokenId), uri: tokenURI });
           }
         }
@@ -178,11 +186,16 @@ export default function UserPage() {
                 className="bg-[#1e293b] rounded-lg overflow-hidden shadow hover:shadow-lg transition-shadow"
               >
                 <Image
-                  src={nft.uri}
+                  src={`https://picsum.photos/400/300?random=${Math.random()}`}
                   alt={`NFT ${nft.id}`}
                   className="w-full h-48 object-cover"
-                  layout="fill"
-                  objectFit="cover"
+                  width={400}
+                  height={300}
+                  style={{
+                    width: "100%",
+                    height: "auto",
+                    objectFit: "cover", // 替代旧的布局方式
+                  }}
                 />
                 <div className="p-4">
                   <h3 className="text-lg font-bold mb-2 text-white">

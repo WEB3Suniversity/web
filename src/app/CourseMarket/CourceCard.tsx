@@ -22,53 +22,6 @@ const CourseCard = ({
 }) => {
   const accounts = useAccounts(); // 获取当前钱包地址
   const currentAccount = accounts?.[0]; // 获取第一个钱包地址
-  // const [cartCount, setCartCount] = useState(0);
-  // const [isAnimating, setIsAnimating] = useState(false);
-  // const [flyIconStyle, setFlyIconStyle] = useState({});
-  // const [isCartReady, setIsCartReady] = useState(false);
-
-  // 确保购物车 DOM 已加载
-  // useEffect(() => {
-  //   const cart = document.getElementById("shopping-cart");
-  //   if (cart) setIsCartReady(true);
-  // }, []);
-  // const handleBuy = (event: React.MouseEvent) => {
-  //   if (!isCartReady) return;
-
-  //   const buttonRect = event.currentTarget.getBoundingClientRect();
-  //   const cartRect = document
-  //     .getElementById("shopping-cart")
-  //     ?.getBoundingClientRect();
-
-  //   if (cartRect) {
-  //     const startX = buttonRect.left + buttonRect.width / 2;
-  //     const startY = buttonRect.top;
-  //     const endX = cartRect.left - cartRect.width / 2;
-  //     const endY = cartRect.top - cartRect.height / 2;
-  //     setFlyIconStyle({
-  //       left: startX,
-  //       top: startY,
-  //       // transform: "translate(0, 0)",
-  //       opacity: 1,
-  //     });
-
-  //     setIsAnimating(true);
-
-  //     setTimeout(() => {
-  //       setFlyIconStyle({
-  //         left: endX,
-  //         top: endY,
-  //         //   transform: "translate(0, 0) scale(0.5)",
-  //         opacity: 0,
-  //       });
-  //     }, 0);
-
-  //     setTimeout(() => {
-  //       setIsAnimating(false);
-  //       setCartCount((prevCount) => prevCount + 1);
-  //     }, 10000);
-  //   }
-  // };
   const isOwner =
     course.creator.toLowerCase() === currentAccount?.toLowerCase();
 

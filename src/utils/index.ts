@@ -133,7 +133,32 @@ export const generateNftMetadata = (
     )
   ).toString("base64")}`;
 };
+export const parseBase64ToJson = (data: string) => {
+  // 移除 `data:application/json;base64,` 前缀
+  const base64String = data.replace(/^data:application\/json;base64,/, "");
 
+  // 解码 base64 字符串为 JSON 字符串
+  const jsonString = Buffer.from(base64String, "base64").toString("utf-8");
+
+  // 将 JSON 字符串解析为对象
+  const jsonObject = JSON.parse(jsonString);
+  console.log(jsonObject, ";jsonObject-jsonObject");
+
+  return jsonObject;
+};
+export const parseDataToJson = async (data: string) => {
+  if (data.startsWith("data:application/json;base64,")) {
+    console.log(data, ";data-data");
+    // Base64 数据，使用 Base64 解析
+    return parseBase64ToJson(data);
+  } else if (data.endsWith(".json")) {
+    // `.json` 文件 URL，使用 fetch 解析
+    // return fetchJsonFromUrl(data);
+    return data;
+  } else {
+    throw new Error("Invalid data format. Must be Base64 or JSON URL.");
+  }
+};
 export const getEthereumProvider = () => {
   if (typeof window !== "undefined") {
     return new ethers.BrowserProvider(
