@@ -29,8 +29,6 @@ export default function UserPage() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const router = useRouter();
-
   // 获取用户账号
   const fetchUserAccount = async () => {
     if (!isClient()) return;
