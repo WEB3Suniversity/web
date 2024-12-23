@@ -3,7 +3,7 @@ const { MongoClient } = require("mongodb");
 async function main() {
   // Connect to the MongoDB database
   const client = new MongoClient(
-    "mongodb+srv://lijinhai255:ADeQx1Hyj8JRDZtF@cluster0.m2ayv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+    "mongodb://root:example@localhost:27017/admin"
   );
 
   try {
