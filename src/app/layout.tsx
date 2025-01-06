@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/components/Nav";
 import { Web3ReactProviderWrapper } from "./providers/Web3Provider";
+import ThreeCanvas from "@/components/ThreeCanvas";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({
@@ -22,15 +23,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <Web3ReactProviderWrapper>
+    <html
+      lang="en"
+      className="antialiased relative min-h-screen bg-dark-light text-gray-900 p-6"
+    >
+      <Web3ReactProviderWrapper>
+        <body className={`${geistSans.variable} ${geistMono.variable} `}>
+          <ThreeCanvas />
+
           <NavBar />
-          {children}
-        </Web3ReactProviderWrapper>
-      </body>
+          <main className="relative max-w-4xl mx-auto mt-32 z-1">
+            <ThreeCanvas />
+
+            {children}
+          </main>
+        </body>
+      </Web3ReactProviderWrapper>
     </html>
   );
 }

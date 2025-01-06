@@ -6,6 +6,7 @@ import { hooks, metaMask } from "@/connections/metaMask";
 import MetaMaskCard from "@/components/connectorCards/MetaMaskCard";
 import ExchangeModal from "@/components/CourseMarketPage";
 import dynamic from "next/dynamic";
+import UpLink from "./UpLink";
 
 const Avatar = dynamic(() => import("@/components/Jazzicon"), { ssr: false });
 
@@ -79,30 +80,16 @@ const NavBar = () => {
     setIsModalOpen(true);
   };
   return (
-    <nav className="flex items-center justify-between px-6 py-4 bg-[#0f172a] text-white">
+    <nav className="flex items-center justify-between px-1 py-1  text-white relative z-10 ">
       <div className="flex items-center space-x-2">
         <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-blue-400 rounded"></div>
         <span className="font-semibold text-lg">MetaMask Wallet</span>
       </div>
       <div className="hidden md:flex space-x-8 text-gray-200">
-        <Link
-          href="/CourseMarket"
-          className="hover:text-white transition-colors"
-        >
-          Courses
-        </Link>
-        <Link href="/articles" className="hover:text-white transition-colors">
-          Articles
-        </Link>
-        <Link href="/user" className="hover:text-white transition-colors">
-          My Profile
-        </Link>
-        <Link
-          href="#"
-          className="hover:text-white transition-colors cursor-pointer"
-        >
-          <span onClick={openModal}>Redeem WEBAI</span>
-        </Link>
+        <UpLink text="Courses" href="/CourseMarket" showArrow={false}></UpLink>
+        <UpLink text="Articles" href="/articles" showArrow={false}></UpLink>
+        <UpLink text=" My Profile" href="/user" showArrow={false}></UpLink>
+        <UpLink text=" Redeem WEBAI" href="/user" showArrow={false}></UpLink>
       </div>
 
       <div className="flex items-center space-x-4">
