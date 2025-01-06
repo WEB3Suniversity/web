@@ -1,5 +1,4 @@
 import type { Config } from "tailwindcss";
-import { blacklist } from "validator";
 
 export default {
   content: [

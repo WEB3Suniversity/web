@@ -16,6 +16,7 @@ import {
 } from "@/utils";
 import CourseCard from "./CourceCard";
 import { NFT_ABI } from "@/utils/NFT_ABI";
+import SectionHeader from "@/components/SectionHeader";
 
 interface Course {
   web2CourseId: string;
@@ -299,9 +300,12 @@ export default function CourseMarketPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-8">
+    <div className="min-h-screen  text-white p-8">
       <div className="container mx-auto">
-        <h1 className="text-3xl font-bold mb-6">Course Marketplace</h1>
+        <SectionHeader
+          title="Course Marketplace"
+          content="Course Marketplace is a dynamic online platform designed to connect learners with a diverse array of educational courses offered by expert instructors from around the world. Whether you're seeking to advance your career, acquire new skills, or pursue personal interests, Course Marketplace provides an extensive selection of subjects tailored to meet your unique learning needs."
+        />
         {message && (
           <div
             className={`mb-4 p-4 rounded ${
@@ -364,7 +368,7 @@ export default function CourseMarketPage() {
                 placeholder="Web2课程ID"
                 value={newWeb2Id}
                 onChange={(e) => setNewWeb2Id(e.target.value)}
-                className="border border-gray-600 p-2 w-full rounded bg-gray-900 text-white"
+                className="border border-gray-600 p-2 w-full rounded  text-white"
               />
 
               {/* 课程名称 输入框 */}
@@ -373,7 +377,7 @@ export default function CourseMarketPage() {
                 placeholder="课程名称"
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
-                className="border border-gray-600 p-2 w-full rounded bg-gray-900 text-white"
+                className="border border-gray-600 p-2 w-full rounded  text-white"
               />
 
               {/* 课程价格 输入框 */}
@@ -382,7 +386,7 @@ export default function CourseMarketPage() {
                 placeholder="课程价格（YD代币数量）"
                 value={newPrice}
                 onChange={(e) => setNewPrice(e.target.value)}
-                className="border border-gray-600 p-2 w-full rounded bg-gray-900 text-white"
+                className="border border-gray-600 p-2 w-full rounded  text-white"
               />
             </div>
 
