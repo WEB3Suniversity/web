@@ -6,6 +6,9 @@ import {
   Web3Provider,
 } from "@ethersproject/providers";
 import { ethers } from "ethers";
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
 /**
  * 格式化日期
  * @param date Date对象或时间戳
@@ -177,3 +180,7 @@ export const YD_TOKEN_ADDRESS = "0x4Ee7e7E6104451c65ecFe94B6878e1025B02ccA8";
 
 export const NFT_CONTRACT_ADDRESS =
   "0x0245da269fB6688068c0Be3A4EC0377cf5328dB6";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}

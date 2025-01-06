@@ -82,8 +82,8 @@ const NavBar = () => {
   return (
     <nav className="flex items-center justify-between px-1 py-1  text-white relative z-10 ">
       <div className="flex items-center space-x-2">
-        <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-blue-400 rounded"></div>
-        <span className="font-semibold text-lg">MetaMask Wallet</span>
+        <div className="w-6 h-6 bg-gradient-to-r from-primary-dark to-primary-light rounded"></div>
+        <span className="font-semibold text-lg">WEB3 College</span>
       </div>
       <div className="hidden md:flex space-x-8 text-gray-200">
         <UpLink text="Courses" href="/CourseMarket" showArrow={false}></UpLink>
@@ -107,7 +107,7 @@ const NavBar = () => {
         ) : (
           <button
             onClick={() => toggleModal("login")}
-            className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded transition-colors"
+            className="bg-primary-dark hover:bg-primary-light hover:text-black text-white py-1 px-3 rounded transition-colors"
           >
             {isActivating ? "Connecting..." : "Connect Wallet"}
           </button>

@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import { blacklist } from "validator";
 
 export default {
   content: [
@@ -35,14 +36,11 @@ export default {
           info: "#0095ff", // 信息
         },
       },
-      animation: {
-        breathe: "breathe 2s ease-in-out infinite",
-      },
       keyframes: {
         breathe: {
-          "0%": { transform: "scale(0.5)", opacity: 0.5 },
-          "50%": { transform: "scale(1)", opacity: 1 },
-          "100%": { transform: "scale(0.5)", opacity: 0.5 },
+          "0%": { transform: "scale(0.5)", opacity: "0.5" },
+          "50%": { transform: "scale(1)", opacity: "10px" },
+          "100%": { transform: "scale(0.5)", opacity: "0.5" },
         },
         topBubbles: {
           "0%": {

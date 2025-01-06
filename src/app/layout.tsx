@@ -5,6 +5,7 @@ import "./globals.css";
 import NavBar from "@/components/Nav";
 import { Web3ReactProviderWrapper } from "./providers/Web3Provider";
 import ThreeCanvas from "@/components/ThreeCanvas";
+import BuySection from "@/components/BuySection";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({
@@ -32,8 +33,8 @@ export default function RootLayout({
           <ThreeCanvas />
 
           <NavBar />
-          <main className="relative max-w-4xl mx-auto mt-32 z-1">
-            <ThreeCanvas />
+          <main className="relative  mx-auto z-1">
+            <BuySection />
 
             {children}
           </main>
