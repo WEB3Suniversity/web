@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 import { NFT_ABI } from "@/utils/NFT_ABI";
@@ -35,7 +34,7 @@ export default function UserPage() {
 
     if (window.ethereum) {
       try {
-        const provider = new ethers.BrowserProvider(window.ethereum as any);
+        const provider = new ethers.BrowserProvider(window.ethereum);
         const signer = await provider.getSigner();
         const account = await signer.getAddress();
         setUserAccount(account);
@@ -51,7 +50,7 @@ export default function UserPage() {
 
   useEffect(() => {
     fetchUserAccount();
-  }, []);
+  });
 
   // 获取用户NFT
   const fetchNFTs = async (account: string) => {
