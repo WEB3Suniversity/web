@@ -30,7 +30,7 @@ const ConfettiButton = ({
   };
 
   return (
-    <button
+    <div
       onClick={handleClick}
       className={cn("relative", isAnimating && "animate-confetti", className)}
       data-confetti-text={confettiText}
@@ -43,7 +43,7 @@ const ConfettiButton = ({
       {...props}
     >
       {children}
-    </button>
+    </div>
   );
 };
 

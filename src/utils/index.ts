@@ -184,3 +184,17 @@ export const NFT_CONTRACT_ADDRESS =
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+export function generateSimpleId() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0"); // 补齐两位
+  const day = String(now.getDate()).padStart(2, "0");
+  const hour = String(now.getHours()).padStart(2, "0");
+  const minute = String(now.getMinutes()).padStart(2, "0");
+  const second = String(now.getSeconds()).padStart(2, "0");
+  const randomNum = Math.floor(Math.random() * 1000)
+    .toString()
+    .padStart(3, "0"); // 三位随机数
+  return `${year}${month}${day}${hour}${minute}${second}${randomNum}`;
+}

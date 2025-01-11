@@ -98,7 +98,7 @@ export default function ArticleDetailsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-8 text-center">
+    <div className="min-h-screen  text-white p-8 text-center">
       <h1 className="text-2xl font-bold mb-6">{article.title || "Untitled"}</h1>
       <p>
         <strong>Author:</strong> {article.author_address || "Unknown"}

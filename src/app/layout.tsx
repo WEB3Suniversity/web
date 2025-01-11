@@ -29,7 +29,9 @@ export default function RootLayout({
       className="antialiased relative min-h-screen bg-dark-light text-gray-900 p-6"
     >
       <Web3ReactProviderWrapper>
-        <body className={`${geistSans.variable} ${geistMono.variable} `}>
+        <body
+          className={`container ${geistSans.variable} ${geistMono.variable} mx-auto `}
+        >
           <ThreeCanvas />
 
           <NavBar />

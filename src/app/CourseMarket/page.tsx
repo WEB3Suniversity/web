@@ -10,13 +10,16 @@ import { hooks, metaMaskStore } from "@/connections/metaMask";
 import {
   CONTRACT_ADDRESS,
   generateNftMetadata,
+  generateSimpleId,
   isClient,
   NFT_CONTRACT_ADDRESS,
   YD_TOKEN_ADDRESS,
 } from "@/utils";
-import CourseCard from "./CourceCard";
+// import CourseCard from "./CourceCard";
+import CourseCard from "@/app/components/CourseCard";
 import { NFT_ABI } from "@/utils/NFT_ABI";
 import SectionHeader from "@/components/SectionHeader";
+import CourseDialog, { CourceDateType } from "./Components/CourseModel";
 
 interface Course {
   web2CourseId: string;
@@ -317,13 +320,17 @@ export default function CourseMarketPage() {
         )}
 
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-semibold text-gray-800 text-white">
+          <h2
+            className="text-2xl font-semibold text-gray-800 
+          text-white"
+          >
             All Courses
           </h2>
           {isOwner && (
             <button
               onClick={() => setShowModal(true)}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition duration-300"
+              className="
+              bg-primary-dark hover:bg-primary-light hover:text-black text-white py-1 px-3 rounded transition-colors  "
             >
               Add Course
             </button>
@@ -356,57 +363,67 @@ export default function CourseMarketPage() {
         </ul>
       </div>
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
-            <h2 className="text-lg font-bold mb-4">
-              Add New Course (Owner Only)
+        <div className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50">
+          <div className="p-8 rounded-xl shadow-xl w-full max-w-md bg-gradient-to-b from-gray-800 to-black border border-gray-700">
+            <h2 className="text-2xl font-bold mb-6 text-primary-light">
+              Add New Course
             </h2>
             <div className="mb-6 flex flex-col space-y-4">
               {/* 课程ID 输入框 */}
               <input
                 type="text"
-                placeholder="Web2课程ID"
+                placeholder="Web3 Course ID"
                 value={newWeb2Id}
                 onChange={(e) => setNewWeb2Id(e.target.value)}
-                className="border border-gray-600 p-2 w-full rounded  text-white"
+                className="border border-gray-600 p-3 w-full rounded-lg bg-gray-900 text-gray-200 focus:outline-none focus:ring-2 focus:ring-green-400"
               />
 
               {/* 课程名称 输入框 */}
               <input
                 type="text"
-                placeholder="课程名称"
+                placeholder="Course Name"
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
-                className="border border-gray-600 p-2 w-full rounded  text-white"
+                className="border border-gray-600 p-3 w-full rounded-lg bg-gray-900 text-gray-200 focus:outline-none focus:ring-2 focus:ring-green-400"
               />
 
               {/* 课程价格 输入框 */}
               <input
                 type="text"
-                placeholder="课程价格（YD代币数量）"
+                placeholder="Course Price (YD Token Amount)"
                 value={newPrice}
                 onChange={(e) => setNewPrice(e.target.value)}
-                className="border border-gray-600 p-2 w-full rounded  text-white"
+                className="border border-gray-600 p-3 w-full rounded-lg bg-gray-900 text-gray-200 focus:outline-none focus:ring-2 focus:ring-green-400"
               />
             </div>
 
             <div className="flex justify-end space-x-4">
               <button
                 onClick={() => setShowModal(false)}
-                className="bg-gray-600 text-white px-4 py-2 rounded"
+                className="bg-gray-700 text-gray-200 px-5 py-2 rounded-lg hover:bg-gray-600 transition-all"
               >
-                取消
+                Cancel
               </button>
               <button
                 onClick={handleAddCourse}
-                className="bg-blue-500 text-white px-4 py-2 rounded"
+                className=" text-white hover:text-black px-5 py-2 rounded-lg bg-primary-dark hover:bg-primary-light shadow-lg shadow-green-500/50 transition-all"
               >
-                添加课程
+                Add Course
               </button>
             </div>
           </div>
         </div>
       )}
+
+      {/* <CourseDialog
+        open={showModal}
+        handleClose={() => {
+          setShowModal(false);
+        }}
+        handleSubmit={(courseData) => {
+          handleAddCourse(courseData);
+        }}
+      /> */}
     </div>
   );
 }
