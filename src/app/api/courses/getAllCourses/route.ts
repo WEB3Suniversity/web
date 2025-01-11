@@ -1,11 +1,12 @@
 // app/api/courses/getAllCourses/route.ts
 import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
-
-export async function POST() {
+console.log(connectToDatabase, "connectToDatabase");
+export async function GET() {
   try {
     const { db } = await connectToDatabase();
-    const courses = await db.collection("courses").find({}).toArray();
+    const courses = await db.collection("courses");
+    console.log(courses, "courses-courses");
 
     return NextResponse.json({
       code: 200,

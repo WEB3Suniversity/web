@@ -161,7 +161,7 @@ export default function CourseMarketPage() {
   }, [loadPurchasedCourses, loadCourses]);
 
   const getAllCourcesFn = async () => {
-    const res = await fetch("/api/courses");
+    const res = await fetch("/api/courses/getAllCourses");
     console.log(res, "res");
   };
 
@@ -329,11 +329,11 @@ export default function CourseMarketPage() {
             All Courses
           </h2>
           <button
-              onClick={() => setShowModal(true)}
-              className="
+            onClick={() => setShowModal(true)}
+            className="
               bg-primary-dark hover:bg-primary-light hover:text-black text-white py-1 px-3 rounded transition-colors  "
-            >
-              Add Course
+          >
+            Add Course
           </button>
           {/* {isOwner && (
             <button
