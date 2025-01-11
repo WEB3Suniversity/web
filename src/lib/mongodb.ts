@@ -2,7 +2,6 @@ import { MongoClient, Db } from "mongodb";
 
 let client: MongoClient;
 let db: Db;
-
 const uri =
   process.env.NEXT_PUBLIC_DATABASE_URL ||
   "mongodb+srv://lijinhai255:ADeQx1Hyj8JRDZtF@cluster0.m2ayv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"; // Load the DATABASE_URL from .env

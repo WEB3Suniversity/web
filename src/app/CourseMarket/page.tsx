@@ -303,6 +303,26 @@ export default function CourseMarketPage() {
       }
     }
   };
+  const addCourseFn = async () => {
+    const { data } = await fetch("/api/courses/createCourse", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: "Introduction to Blockchain",
+        description: "Learn the basics of blockchain technology.",
+        level: "Beginner",
+        category: "Technology",
+        modules: 10,
+        hours: 20,
+        rewards: 100,
+        price: 49.99,
+        contractCourseId: 101,
+        status: "active",
+        createdAt: new Date(),
+      }),
+    });
+    console.log(data);
+  };
 
   return (
     <div className="min-h-screen  text-white p-8">
@@ -328,6 +348,13 @@ export default function CourseMarketPage() {
           >
             All Courses
           </h2>
+          <button
+            onClick={() => addCourseFn()}
+            className="
+              bg-primary-dark hover:bg-primary-light hover:text-black text-white py-1 px-3 rounded transition-colors  "
+          >
+            Add Course
+          </button>
           <button
             onClick={() => setShowModal(true)}
             className="
