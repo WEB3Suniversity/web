@@ -354,7 +354,7 @@ export default function CourseMarketPage() {
             className="
               bg-primary-dark hover:bg-primary-light hover:text-black text-white py-1 px-3 rounded transition-colors  "
           >
-            Add Course
+            添加接口的数据
           </button>
           <button
             onClick={() => setShowModal(true)}
