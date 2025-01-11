@@ -48,8 +48,6 @@ export default function CourseMarketPage() {
 
   const [message, setMessage] = useState<string>("");
   const isActive = useIsActive();
-  console.log("MetaMask Store State:", metaMaskStore.getState(), isActive);
-  console.log(account, ";account-account");
 
   useEffect(() => {
     if (isClient()) {
