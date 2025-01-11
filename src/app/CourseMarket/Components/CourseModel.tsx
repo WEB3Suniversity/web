@@ -33,7 +33,7 @@ const CourseDialog: React.FC<CourseDialogProps> = ({
     rewards: "",
     price: "",
   });
-  const handleChange = (e) => {
+  const handleChange = (e: { target: { name: string; value: string } }) => {
     const { name, value } = e.target;
     setCourseData((prev) => ({
       ...prev,
@@ -146,7 +146,7 @@ const CourseDialog: React.FC<CourseDialogProps> = ({
               </button>
               <button
                 type="submit"
-                onClick={handleAddCourse?.(courseData)}
+                onClick={() => handleAddCourse?.(courseData)}
                 className="bg-[#4F46E5] hover:bg-[#4338CA] text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200"
               >
                 创建课程
