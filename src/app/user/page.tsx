@@ -35,9 +35,7 @@ export default function UserPage() {
 
     if (window.ethereum) {
       try {
-        const provider = new ethers.BrowserProvider(
-          window.ethereum as ethers.providers.ExternalProvider
-        );
+        const provider = new ethers.BrowserProvider(window.ethereum);
         const signer = await provider.getSigner();
         const account = await signer.getAddress();
         setUserAccount(account);
