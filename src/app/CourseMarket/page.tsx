@@ -17,6 +17,7 @@ import {
 import CourseCard from "@/app/components/CourseCard";
 import { NFT_ABI } from "@/utils/NFT_ABI";
 import SectionHeader from "@/components/SectionHeader";
+import CourseDialog from "./Components/CourseModel";
 
 interface Course {
   web2CourseId: string;
@@ -327,7 +328,14 @@ export default function CourseMarketPage() {
           >
             All Courses
           </h2>
-          {isOwner && (
+          <button
+              onClick={() => setShowModal(true)}
+              className="
+              bg-primary-dark hover:bg-primary-light hover:text-black text-white py-1 px-3 rounded transition-colors  "
+            >
+              Add Course
+          </button>
+          {/* {isOwner && (
             <button
               onClick={() => setShowModal(true)}
               className="
@@ -335,7 +343,7 @@ export default function CourseMarketPage() {
             >
               Add Course
             </button>
-          )}
+          )} */}
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {courses.map((course, index) => (
@@ -416,7 +424,7 @@ export default function CourseMarketPage() {
         </div>
       )}
 
-      {/* <CourseDialog
+      <CourseDialog
         open={showModal}
         handleClose={() => {
           setShowModal(false);
@@ -424,7 +432,7 @@ export default function CourseMarketPage() {
         handleSubmit={(courseData) => {
           handleAddCourse(courseData);
         }}
-      /> */}
+      />
     </div>
   );
 }
