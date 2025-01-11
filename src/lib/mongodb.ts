@@ -22,3 +22,13 @@ export async function connectToDb(): Promise<Db> {
   }
   return db;
 }
+
+export async function connectToDatabase(): Promise<Db> {
+  if (!client) {
+    client = new MongoClient(uri);
+    await client.connect();
+    console.log("Connected to MongoDB");
+    db = client.db(); // Use the database specified in the connection string
+  }
+  return db;
+}

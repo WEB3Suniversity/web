@@ -156,7 +156,13 @@ export default function CourseMarketPage() {
   useEffect(() => {
     loadPurchasedCourses();
     loadCourses();
+    getAllCourcesFn();
   }, [loadPurchasedCourses, loadCourses]);
+
+  const getAllCourcesFn = async () => {
+    const res = await fetch("/api/courses");
+    console.log(res, "res");
+  };
 
   const handleAddCourse = async () => {
     if (!courseContract) return;

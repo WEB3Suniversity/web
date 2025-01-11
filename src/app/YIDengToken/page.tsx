@@ -28,7 +28,8 @@ export default function YIDengToken() {
   const [data, setData] = useState<ContractData>({});
 
   useEffect(() => {
-    if (isClient() && window.ethereum) {
+    console.log(window.ethereum, "isClient() && window.ethereum");
+    if (window.ethereum) {
       const ethProvider = getEthereumProvider();
       if (!ethProvider) return;
 
