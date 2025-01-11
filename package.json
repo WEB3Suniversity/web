@@ -9,25 +9,38 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
     "@ethersproject/units": "^5.7.0",
+    "@mui/material": "^6.3.1",
+    "@nestjs/common": "^10.4.15",
+    "@nestjs/core": "^10.4.15",
+    "@nestjs/platform-express": "^10.4.15",
     "@web3-react/core": "^8.2.3",
+    "@web3-react/injected-connector": "^6.0.7",
     "@web3-react/metamask": "^8.2.4",
     "@web3-react/types": "^8.2.3",
+    "clsx": "^2.1.1",
     "ethers": "^6.13.4",
     "eventemitter3": "^5.0.1",
-    "next": "15.1.0",
+    "jazzicon": "^1.5.0",
+    "lucide-react": "^0.469.0",
+    "mongodb": "^6.12.0",
+    "next": "^15.1.2",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "tailwind-merge": "^2.6.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@types/node": "^20",
+    "@metamask/providers": "^18.3.0",
+    "@types/node": "^20.17.10",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.1.0",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "typescript": "^5.7.2"
   }
 }

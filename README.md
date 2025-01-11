@@ -12,6 +12,11 @@ yarn dev
 pnpm dev
 # or
 bun dev
+
+
+rm -rf .next
+npm run build
+
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
@@ -34,3 +39,96 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+
+## prisma 使用 
+
+### 生成Prisma客户端
+
+```bash
+npx prisma init
+
+npx prisma db push
+
+npx prisma generate
+```
+
+###  创建 Prisma 服务
+
+> 接下来，你需要创建一个 PrismaService，它将提供 Prisma Client 作为依赖注入到你的服务中。
+
+```bash
+nest generate service prisma
+
+```
+## 创建 Article 服务
+
+> 创建一个 articles 服务来管理文章的增、改、删操作。
+
+```bash
+nest generate service articles
+
+```
+
+## 创建 Article 控制器
+
+> 然后，创建一个 articles 控制器来暴露 API 接口：
+
+```bash
+nest generate controller articles
+
+```
+
+## docker 使用
+
+```bash
+docker-compose up 
+
+sudo systemctl start docker
+
+docker ps
+
+docker-compose logs
+
+
+docker-compose down --volumes
+docker-compose up -d
+
+mongosh "mongodb://localhost:27017/admin"
+
+use admin;
+db.createUser({
+  user: "root",
+  pwd: "example",
+  roles: [{ role: "root", db: "admin" }]
+});
+
+
+
+docker exec -it mongodb ls /docker-entrypoint-initdb.d/
+
+
+show collections;
+
+mongosh "mongodb://localhost:27017"
+mongosh "mongodb://root:example@localhost:27017"
+
+docker exec -it mongodb mongosh "mongodb://root:example@localhost:27017"
+
+❯ docker ps
+❯ brew services stop mongodb-community
+
+
+
+```
+
+### XHR 语句
+
+```bash
+curl -X GET http://localhost:3000/api/articles         
+
+curl -X POST http://localhost:3000/api/articles \
+  -H "Content-Type: application/json" \
+  -d '{"author_address": "0x123456789abcdef", "title": "New Article", "content_hash": "hash123"}'
+
+```

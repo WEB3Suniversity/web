@@ -31,7 +31,14 @@ interface ExtendedChainInformation extends BasicChainInformation {
 function isExtendedChainInformation(
   chainInformation: BasicChainInformation | ExtendedChainInformation
 ): chainInformation is ExtendedChainInformation {
-  return !!(chainInformation as ExtendedChainInformation).nativeCurrency;
+  // Check that 'nativeCurrency' and 'blockExplorerUrls' exist on the chain information
+  return (
+    chainInformation &&
+    (chainInformation as ExtendedChainInformation)?.nativeCurrency !==
+      undefined &&
+    (chainInformation as ExtendedChainInformation)?.blockExplorerUrls !==
+      undefined
+  );
 }
 
 const getInfuraUrlFor = (network: string) =>
@@ -92,7 +99,7 @@ export const MAINNET_CHAINS: ChainConfig = {
   11155111: {
     // Sepolia Testnet
     urls: [getInfuraUrlFor("sepolia")].filter(Boolean),
-    name: "Sepolia",
+    name: "Sepolia1",
     nativeCurrency: ETH,
     blockExplorerUrls: ["https://sepolia.etherscan.io"],
   },
@@ -174,7 +181,28 @@ export const URLS: { [chainId: number]: string[] } = Object.keys(
 export function getAddChainParameters(
   chainId: number
 ): AddEthereumChainParameter | number {
+  if (chainId === -1) {
+    // Handle the default chain case, you can return any default values here.
+    return {
+      chainId: 1, // Default to Mainnet (you can adjust this to whatever is the default for your app)
+      chainName: "Mainnet",
+      nativeCurrency: {
+        name: "Ether",
+        symbol: "ETH",
+        decimals: 18,
+      },
+      rpcUrls: ["https://mainnet.infura.io/v3/YOUR_INFURA_KEY"], // Replace with your own Infura or RPC URL
+      blockExplorerUrls: ["https://etherscan.io"],
+    };
+  }
+
   const chainInformation = CHAINS[chainId];
+
+  if (!chainInformation) {
+    console.error(`No chain information found for chainId ${chainId}`);
+    return chainId; // Return the chainId if no information is found
+  }
+
   if (isExtendedChainInformation(chainInformation)) {
     return {
       chainId,
@@ -184,6 +212,6 @@ export function getAddChainParameters(
       blockExplorerUrls: chainInformation.blockExplorerUrls,
     };
   } else {
-    return chainId;
+    return chainId; // Return the chainId for basic chain information
   }
 }

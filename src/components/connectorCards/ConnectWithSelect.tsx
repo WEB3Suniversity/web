@@ -93,7 +93,6 @@ export function ConnectWithSelect({
     },
     [connector, activeChainId, setError]
   );
-  console.log(chainIds, "chainIds-chainIds");
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
       <ChainSelect

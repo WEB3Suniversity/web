@@ -48,21 +48,14 @@ export function Accounts({
     <div>
       Accounts:{" "}
       <b>
-        {accounts.length === 0
-          ? "None"
-          : accounts?.map((account, i) => (
-              <ul
-                key={account}
-                style={{
-                  margin: 0,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                }}
-              >
-                {ENSNames?.[i] ?? account}
-                {balances?.[i] ? ` (Ξ${formatEther(balances[i])})` : null}
-              </ul>
-            ))}
+        {accounts.length === 0 ? (
+          "None"
+        ) : (
+          <>
+            {ENSNames?.[0] ?? accounts?.[0]}
+            {balances?.[0] ? ` (Ξ${formatEther(balances[0])})` : null}
+          </>
+        )}
       </b>
     </div>
   );
