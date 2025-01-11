@@ -6,7 +6,7 @@ import { CONTRACT_ABI } from "@/utils/CONTRACT_ABI";
 // import { BigInt } from "ethers"; // 正确导入 BigNumber
 // 请替换为您的YD代币地址和ABI
 import { YD_TOKEN_ABI } from "@/utils/YiDengToKen_ABI";
-import { hooks, metaMaskStore } from "@/connections/metaMask";
+import { hooks } from "@/connections/metaMask";
 import {
   CONTRACT_ADDRESS,
   generateNftMetadata,
@@ -49,6 +49,7 @@ export default function CourseMarketPage() {
 
   const [message, setMessage] = useState<string>("");
   const isActive = useIsActive();
+  console.log(isOwner, "isOwner", isActive);
 
   useEffect(() => {
     if (isClient()) {

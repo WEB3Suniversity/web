@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { YD_TOKEN_ABI } from "@/utils/YiDengToKen_ABI";
-import { CONTRACT_ADDRESS, getEthereumProvider, isClient } from "@/utils";
+import { CONTRACT_ADDRESS, getEthereumProvider } from "@/utils";
 
 interface ContractData {
   MAX_SUPPLY?: string;
