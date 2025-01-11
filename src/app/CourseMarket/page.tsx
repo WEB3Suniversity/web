@@ -10,16 +10,13 @@ import { hooks, metaMaskStore } from "@/connections/metaMask";
 import {
   CONTRACT_ADDRESS,
   generateNftMetadata,
-  generateSimpleId,
   isClient,
   NFT_CONTRACT_ADDRESS,
   YD_TOKEN_ADDRESS,
 } from "@/utils";
-// import CourseCard from "./CourceCard";
 import CourseCard from "@/app/components/CourseCard";
 import { NFT_ABI } from "@/utils/NFT_ABI";
 import SectionHeader from "@/components/SectionHeader";
-import CourseDialog, { CourceDateType } from "./Components/CourseModel";
 
 interface Course {
   web2CourseId: string;

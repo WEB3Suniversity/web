@@ -5,7 +5,7 @@ import ConfettiButton from "@/app/components/ui/ConfettiButton";
 
 const BuyYD = () => {
   const [amount, setAmount] = useState("10");
-  const [usdEquivalent, setUsdEquivalent] = useState("20.23");
+  const [usdEquivalent] = useState("20.23");
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAmount(e.target.value);

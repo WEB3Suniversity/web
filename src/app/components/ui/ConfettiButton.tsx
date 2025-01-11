@@ -18,7 +18,7 @@ const ConfettiButton = ({
   confettiColor = "#c5ff1a",
   animationDuration = 1000,
   ...props
-}: ConfettiButtonProps) => {
+}: ConfettiButtonProps & React.ButtonHTMLAttributes<HTMLButtonElement>) => {
   const [isAnimating, setIsAnimating] = useState(false);
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -30,7 +30,7 @@ const ConfettiButton = ({
   };
 
   return (
-    <div
+    <button
       onClick={handleClick}
       className={cn("relative", isAnimating && "animate-confetti", className)}
       data-confetti-text={confettiText}
@@ -40,10 +40,10 @@ const ConfettiButton = ({
           "--animation-duration": `${animationDuration}ms`,
         } as React.CSSProperties
       }
-      {...props}
+      {...(props as React.HTMLAttributes<HTMLButtonElement>)}
     >
       {children}
-    </div>
+    </button>
   );
 };
 

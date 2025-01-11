@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Link from "next/link";
 import { hooks, metaMask } from "@/connections/metaMask";
 import MetaMaskCard from "@/components/connectorCards/MetaMaskCard";
 import ExchangeModal from "@/components/CourseMarketPage";
@@ -76,9 +75,7 @@ const NavBar = () => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
+
   return (
     <nav className="flex items-center justify-between px-1 py-1  text-white relative z-10 ">
       <div className="flex items-center space-x-2">

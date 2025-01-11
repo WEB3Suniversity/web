@@ -1,15 +1,14 @@
 "use client";
 
-import { cn, formatDate } from "@/utils";
+import { cn } from "@/utils";
 import { UserPlus, ShoppingBasket, AArrowUp } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
 import { Button } from "@/app/components/ui/button";
 import { Skeleton } from "@/app/components/ui/skeleton";
 import ConfettiButton from "@/app/components/ui/ConfettiButton";
-import { hooks } from "@/connections/metaMask";
+// import { hooks } from "@/connections/metaMask";
 
-const { useAccounts } = hooks;
+// const { useAccounts } = hooks;
 
 const CourseCard = ({
   course,
@@ -26,10 +25,10 @@ const CourseCard = ({
   isPurchased: boolean;
   handleApproveAndPurchaseUnified?: (key: string) => void;
 }) => {
-  const accounts = useAccounts(); // 获取当前钱包地址
-  const currentAccount = accounts?.[0]; // 获取第一个钱包地址
-  const isOwner =
-    course.creator.toLowerCase() === currentAccount?.toLowerCase();
+  // const accounts = useAccounts(); // 获取当前钱包地址
+  // const currentAccount = accounts?.[0]; // 获取第一个钱包地址
+  // const isOwner =
+  //   course.creator.toLowerCase() === currentAccount?.toLowerCase();
 
   return (
     <li className="course-card group relative overflow-hidden list-none">
